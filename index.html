@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM · Instituto Dra. Thais Machado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E2C47A;
+    --gold-pale: #F5E9C8;
+    --dark: #0E0D0B;
+    --dark-2: #161410;
+    --dark-3: #1F1C17;
+    --dark-4: #2A2620;
+    --dark-5: #35302A;
+    --text: #EDE8DC;
+    --text-muted: #9A9183;
+    --text-dim: #6B6358;
+    --red: #C04A3A;
+    --green: #4A8C5C;
+    --blue: #3A6FA8;
+    --radius: 8px;
+    --radius-lg: 14px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:var(--dark); color:var(--text); min-height:100vh; display:flex; overflow:hidden; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 220px; min-height:100vh; background:var(--dark-2);
+    border-right:1px solid rgba(201,168,76,0.15);
+    display:flex; flex-direction:column; flex-shrink:0;
+  }
+  .sidebar-logo {
+    padding:24px 20px 20px;
+    border-bottom:1px solid rgba(201,168,76,0.1);
+  }
+  .sidebar-logo .brand {
+    font-family:'Cormorant Garamond',serif;
+    font-size:13px; font-weight:600;
+    color:var(--gold-light);
+    letter-spacing:0.05em;
+    line-height:1.4;
+  }
+  .sidebar-logo .brand span { color:var(--text-muted); font-weight:300; display:block; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; margin-top:2px; }
+  .sidebar-logo .dot { display:inline-block; width:6px; height:6px; background:var(--gold); border-radius:50%; margin-right:8px; }
+
+  .sidebar-nav { flex:1; padding:16px 0; }
+  .nav-section { margin-bottom:24px; }
+  .nav-label { font-size:9px; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-dim); padding:0 20px 8px; }
+  .nav-item {
+    display:flex; align-items:center; gap:10px;
+    padding:9px 20px; cursor:pointer; font-size:13px; color:var(--text-muted);
+    transition:all 0.18s; border-left:2px solid transparent;
+    user-select:none;
+  }
+  .nav-item:hover { color:var(--text); background:rgba(201,168,76,0.05); }
+  .nav-item.active { color:var(--gold-light); background:rgba(201,168,76,0.08); border-left-color:var(--gold); }
+  .nav-item .icon { font-size:15px; width:18px; text-align:center; }
+  .nav-badge { margin-left:auto; background:var(--gold); color:var(--dark); font-size:10px; font-weight:600; padding:1px 6px; border-radius:10px; }
+
+  .sidebar-footer { padding:16px 20px; border-top:1px solid rgba(201,168,76,0.1); }
+  .user-pill { display:flex; align-items:center; gap:10px; }
+  .user-avatar { width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,var(--gold),var(--gold-light)); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:var(--dark); flex-shrink:0; }
+  .user-name { font-size:12px; color:var(--text-muted); }
+
+  /* MAIN */
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* TOPBAR */
+  .topbar {
+    height:56px; background:var(--dark-2); border-bottom:1px solid rgba(201,168,76,0.12);
+    display:flex; align-items:center; padding:0 28px; gap:16px; flex-shrink:0;
+  }
+  .topbar h1 { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:500; color:var(--text); flex:1; }
+  .topbar h1 small { font-family:'DM Sans',sans-serif; font-size:11px; font-weight:400; color:var(--text-dim); margin-left:10px; letter-spacing:0.05em; }
+  .btn {
+    display:inline-flex; align-items:center; gap:7px; padding:8px 16px;
+    border-radius:var(--radius); border:none; cursor:pointer; font-family:'DM Sans',sans-serif;
+    font-size:13px; font-weight:500; transition:all 0.18s;
+  }
+  .btn-gold { background:var(--gold); color:var(--dark); }
+  .btn-gold:hover { background:var(--gold-light); }
+  .btn-ghost { background:rgba(201,168,76,0.08); color:var(--gold-light); border:1px solid rgba(201,168,76,0.2); }
+  .btn-ghost:hover { background:rgba(201,168,76,0.15); }
+  .search-bar {
+    display:flex; align-items:center; gap:8px; background:var(--dark-3);
+    border:1px solid rgba(201,168,76,0.12); border-radius:var(--radius);
+    padding:7px 12px; min-width:220px;
+  }
+  .search-bar input { background:none; border:none; outline:none; color:var(--text); font-family:'DM Sans',sans-serif; font-size:13px; width:100%; }
+  .search-bar input::placeholder { color:var(--text-dim); }
+
+  /* CONTENT */
+  .content { flex:1; overflow:auto; padding:24px 28px; }
+
+  /* VIEWS */
+  .view { display:none; }
+  .view.active { display:block; }
+
+  /* STATS ROW */
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+  .stat-card {
+    background:var(--dark-3); border:1px solid rgba(201,168,76,0.1);
+    border-radius:var(--radius-lg); padding:18px 20px;
+  }
+  .stat-card .label { font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px; }
+  .stat-card .value { font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:500; color:var(--gold-light); line-height:1; }
+  .stat-card .sub { font-size:11px; color:var(--text-muted); margin-top:6px; }
+  .stat-card .trend { display:inline-flex; align-items:center; gap:3px; font-size:11px; margin-top:6px; }
+  .trend.up { color:var(--green); }
+  .trend.down { color:var(--red); }
+
+  /* TABLE */
+  .table-wrap { background:var(--dark-3); border:1px solid rgba(201,168,76,0.1); border-radius:var(--radius-lg); overflow:hidden; }
+  .table-header { display:flex; align-items:center; padding:16px 20px; border-bottom:1px solid rgba(201,168,76,0.1); gap:12px; }
+  .table-header h3 { font-family:'Cormorant Garamond',serif; font-size:16px; font-weight:500; color:var(--text); flex:1; }
+  .filter-tabs { display:flex; gap:4px; }
+  .filter-tab { padding:5px 12px; border-radius:20px; border:1px solid rgba(201,168,76,0.15); font-size:12px; cursor:pointer; color:var(--text-muted); background:none; font-family:'DM Sans',sans-serif; transition:all 0.15s; }
+  .filter-tab.active, .filter-tab:hover { background:rgba(201,168,76,0.12); color:var(--gold-light); border-color:rgba(201,168,76,0.3); }
+
+  table { width:100%; border-collapse:collapse; }
+  thead th { padding:10px 16px; text-align:left; font-size:11px; font-weight:500; color:var(--text-dim); letter-spacing:0.08em; text-transform:uppercase; border-bottom:1px solid rgba(201,168,76,0.08); background:var(--dark-4); }
+  tbody tr { border-bottom:1px solid rgba(201,168,76,0.06); transition:background 0.15s; cursor:pointer; }
+  tbody tr:hover { background:rgba(201,168,76,0.04); }
+  tbody tr:last-child { border-bottom:none; }
+  td { padding:12px 16px; font-size:13px; color:var(--text); }
+  .td-name { font-weight:500; }
+  .td-sub { font-size:11px; color:var(--text-muted); margin-top:2px; }
+
+  /* BADGE */
+  .badge {
+    display:inline-flex; align-items:center; gap:4px; padding:3px 10px;
+    border-radius:20px; font-size:11px; font-weight:500;
+  }
+  .badge::before { content:''; width:5px; height:5px; border-radius:50%; background:currentColor; }
+  .badge-new { background:rgba(58,111,168,0.15); color:#6CA0D4; }
+  .badge-agendado { background:rgba(201,168,76,0.12); color:var(--gold-light); }
+  .badge-cirurgia { background:rgba(74,140,92,0.15); color:#7BC498; }
+  .badge-pos { background:rgba(140,74,120,0.15); color:#C488B4; }
+  .badge-inativo { background:rgba(100,90,80,0.2); color:var(--text-dim); }
+  .badge-quente { background:rgba(192,74,58,0.15); color:#D47A6C; }
+  .badge-morno { background:rgba(201,168,76,0.12); color:var(--gold-light); }
+  .badge-frio { background:rgba(58,111,168,0.15); color:#6CA0D4; }
+  .badge-convertido { background:rgba(74,140,92,0.15); color:#7BC498; }
+  .badge-perdido { background:rgba(100,90,80,0.2); color:var(--text-dim); }
+
+  /* AVATAR */
+  .avatar { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--dark-5),var(--dark-4)); border:1px solid rgba(201,168,76,0.2); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:var(--gold); flex-shrink:0; }
+  .avatar-cell { display:flex; align-items:center; gap:10px; }
+
+  /* KANBAN */
+  .kanban { display:flex; gap:16px; overflow-x:auto; padding-bottom:8px; }
+  .kanban-col { min-width:240px; flex-shrink:0; }
+  .kanban-col-header { padding:12px 14px; border-radius:var(--radius) var(--radius) 0 0; display:flex; align-items:center; justify-content:space-between; margin-bottom:2px; }
+  .kanban-col-header .col-name { font-size:12px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; }
+  .kanban-col-header .col-count { font-size:11px; color:var(--text-muted); background:rgba(0,0,0,0.2); padding:1px 7px; border-radius:10px; }
+  .col-novo .kanban-col-header { background:rgba(58,111,168,0.12); }
+  .col-novo .col-name { color:#6CA0D4; }
+  .col-contato .kanban-col-header { background:rgba(201,168,76,0.08); }
+  .col-contato .col-name { color:var(--gold-light); }
+  .col-avaliacao .kanban-col-header { background:rgba(140,74,120,0.1); }
+  .col-avaliacao .col-name { color:#C488B4; }
+  .col-proposta .kanban-col-header { background:rgba(192,74,58,0.1); }
+  .col-proposta .col-name { color:#D47A6C; }
+  .col-fechado .kanban-col-header { background:rgba(74,140,92,0.12); }
+  .col-fechado .col-name { color:#7BC498; }
+  .kanban-cards { background:var(--dark-4); border-radius:0 0 var(--radius) var(--radius); padding:8px; min-height:100px; display:flex; flex-direction:column; gap:8px; }
+  .kanban-card { background:var(--dark-3); border:1px solid rgba(201,168,76,0.1); border-radius:var(--radius); padding:12px; cursor:pointer; transition:all 0.15s; }
+  .kanban-card:hover { border-color:rgba(201,168,76,0.3); background:var(--dark-5); }
+  .kanban-card .card-name { font-size:13px; font-weight:500; color:var(--text); margin-bottom:4px; }
+  .kanban-card .card-proc { font-size:11px; color:var(--text-muted); margin-bottom:8px; }
+  .kanban-card .card-meta { display:flex; align-items:center; justify-content:space-between; }
+  .kanban-card .card-value { font-size:12px; color:var(--gold); font-weight:500; }
+  .kanban-card .card-date { font-size:11px; color:var(--text-dim); }
+
+  /* MODAL */
+  .modal-overlay {
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7);
+    z-index:1000; align-items:center; justify-content:center;
+    backdrop-filter:blur(4px);
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--dark-2); border:1px solid rgba(201,168,76,0.2);
+    border-radius:var(--radius-lg); padding:28px; width:580px; max-height:85vh;
+    overflow-y:auto; position:relative;
+  }
+  .modal h2 { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:500; color:var(--gold-light); margin-bottom:20px; }
+  .modal-close { position:absolute; top:18px; right:18px; background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:18px; }
+  .modal-close:hover { color:var(--text); }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+  .form-row.full { grid-template-columns:1fr; }
+  .form-group { display:flex; flex-direction:column; gap:5px; }
+  .form-group label { font-size:11px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-dim); }
+  .form-group input, .form-group select, .form-group textarea {
+    background:var(--dark-4); border:1px solid rgba(201,168,76,0.15);
+    border-radius:var(--radius); padding:9px 12px; color:var(--text);
+    font-family:'DM Sans',sans-serif; font-size:13px; outline:none;
+    transition:border-color 0.15s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:rgba(201,168,76,0.4); }
+  .form-group select option { background:var(--dark-3); }
+  .form-group textarea { resize:vertical; min-height:80px; }
+  .form-divider { font-size:11px; font-weight:600; color:var(--text-dim); letter-spacing:0.1em; text-transform:uppercase; margin:20px 0 14px; padding-bottom:8px; border-bottom:1px solid rgba(201,168,76,0.1); }
+  .modal-footer { display:flex; gap:10px; justify-content:flex-end; margin-top:24px; padding-top:16px; border-top:1px solid rgba(201,168,76,0.1); }
+
+  /* AGENDA */
+  .agenda-grid { display:grid; grid-template-columns:1fr 280px; gap:20px; }
+  .calendar-wrap { background:var(--dark-3); border:1px solid rgba(201,168,76,0.1); border-radius:var(--radius-lg); padding:20px; }
+  .cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .cal-header h3 { font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:500; }
+  .cal-nav { background:none; border:1px solid rgba(201,168,76,0.15); color:var(--text-muted); padding:4px 10px; border-radius:6px; cursor:pointer; font-size:14px; }
+  .cal-nav:hover { color:var(--gold-light); border-color:rgba(201,168,76,0.3); }
+  .cal-days-header { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; margin-bottom:4px; }
+  .cal-day-name { text-align:center; font-size:10px; font-weight:600; color:var(--text-dim); letter-spacing:0.08em; text-transform:uppercase; padding:4px 0; }
+  .cal-days { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+  .cal-day {
+    aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    border-radius:6px; cursor:pointer; font-size:13px; color:var(--text-muted);
+    transition:all 0.15s; position:relative; padding:2px;
+  }
+  .cal-day:hover { background:rgba(201,168,76,0.08); color:var(--text); }
+  .cal-day.today { background:rgba(201,168,76,0.15); color:var(--gold-light); font-weight:600; }
+  .cal-day.has-event::after { content:''; position:absolute; bottom:4px; width:4px; height:4px; border-radius:50%; background:var(--gold); }
+  .cal-day.other-month { color:var(--text-dim); opacity:0.4; }
+  .agenda-sidebar { display:flex; flex-direction:column; gap:16px; }
+  .agenda-card { background:var(--dark-3); border:1px solid rgba(201,168,76,0.1); border-radius:var(--radius-lg); padding:16px; }
+  .agenda-card h4 { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:12px; }
+  .appt-item { padding:10px 12px; background:var(--dark-4); border-radius:var(--radius); margin-bottom:8px; border-left:3px solid var(--gold); }
+  .appt-item .appt-time { font-size:11px; color:var(--gold); font-weight:600; margin-bottom:2px; }
+  .appt-item .appt-name { font-size:13px; font-weight:500; color:var(--text); }
+  .appt-item .appt-proc { font-size:11px; color:var(--text-muted); }
+  .appt-item.cirurgia { border-left-color:#7BC498; }
+  .appt-item.cirurgia .appt-time { color:#7BC498; }
+  .appt-item.consulta { border-left-color:#6CA0D4; }
+  .appt-item.consulta .appt-time { color:#6CA0D4; }
+
+  /* DASHBOARD */
+  .section-title { font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:500; color:var(--text); margin-bottom:14px; }
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px; }
+  .chart-placeholder { background:var(--dark-3); border:1px solid rgba(201,168,76,0.1); border-radius:var(--radius-lg); padding:20px; }
+  .chart-placeholder h4 { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:16px; }
+  .bar-chart { display:flex; align-items:flex-end; gap:8px; height:100px; }
+  .bar { flex:1; border-radius:4px 4px 0 0; background:rgba(201,168,76,0.2); position:relative; transition:all 0.3s; cursor:pointer; }
+  .bar:hover { background:rgba(201,168,76,0.4); }
+  .bar .bar-label { position:absolute; bottom:-20px; left:50%; transform:translateX(-50%); font-size:10px; color:var(--text-dim); white-space:nowrap; }
+  .bar .bar-val { position:absolute; top:-20px; left:50%; transform:translateX(-50%); font-size:11px; color:var(--gold-light); font-weight:600; white-space:nowrap; }
+  .funnel { display:flex; flex-direction:column; gap:6px; }
+  .funnel-item { display:flex; align-items:center; gap:10px; }
+  .funnel-bar-wrap { flex:1; background:var(--dark-4); border-radius:4px; height:28px; overflow:hidden; }
+  .funnel-bar-fill { height:100%; border-radius:4px; display:flex; align-items:center; padding:0 10px; font-size:12px; font-weight:500; }
+  .funnel-label { font-size:12px; color:var(--text-muted); width:90px; text-align:right; }
+  .funnel-count { font-size:12px; color:var(--gold); font-weight:600; width:30px; text-align:right; }
+
+  /* DETAIL PANEL */
+  .detail-overlay { display:none; position:fixed; right:0; top:0; bottom:0; width:420px; background:var(--dark-2); border-left:1px solid rgba(201,168,76,0.15); z-index:500; overflow-y:auto; transform:translateX(100%); transition:transform 0.25s; }
+  .detail-overlay.open { display:block; transform:translateX(0); }
+  .detail-top { padding:20px 24px; border-bottom:1px solid rgba(201,168,76,0.1); display:flex; align-items:flex-start; gap:14px; }
+  .detail-avatar { width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,var(--gold),var(--gold-light)); display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:600; color:var(--dark); flex-shrink:0; }
+  .detail-info { flex:1; }
+  .detail-info h2 { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:500; color:var(--text); }
+  .detail-info p { font-size:12px; color:var(--text-muted); margin-top:2px; }
+  .detail-close { background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:18px; }
+  .detail-body { padding:20px 24px; }
+  .detail-section { margin-bottom:20px; }
+  .detail-section h4 { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-dim); margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid rgba(201,168,76,0.08); }
+  .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .info-item .info-label { font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:3px; }
+  .info-item .info-val { font-size:13px; color:var(--text); }
+  .timeline { display:flex; flex-direction:column; gap:0; }
+  .timeline-item { display:flex; gap:12px; padding-bottom:14px; position:relative; }
+  .timeline-item::before { content:''; position:absolute; left:7px; top:18px; bottom:0; width:1px; background:rgba(201,168,76,0.15); }
+  .timeline-item:last-child::before { display:none; }
+  .tl-dot { width:15px; height:15px; border-radius:50%; background:var(--dark-4); border:2px solid rgba(201,168,76,0.3); flex-shrink:0; margin-top:2px; }
+  .tl-dot.gold { border-color:var(--gold); background:rgba(201,168,76,0.15); }
+  .tl-content { flex:1; }
+  .tl-content .tl-action { font-size:13px; color:var(--text); }
+  .tl-content .tl-date { font-size:11px; color:var(--text-dim); margin-top:2px; }
+  .note-area { background:var(--dark-4); border:1px solid rgba(201,168,76,0.12); border-radius:var(--radius); padding:10px 12px; }
+  .note-area textarea { background:none; border:none; outline:none; width:100%; font-family:'DM Sans',sans-serif; font-size:13px; color:var(--text); resize:none; min-height:60px; }
+  .note-save { margin-top:8px; display:flex; justify-content:flex-end; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width:4px; height:4px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:rgba(201,168,76,0.2); border-radius:4px; }
+
+  /* TABS */
+  .tabs { display:flex; gap:4px; margin-bottom:20px; background:var(--dark-3); padding:4px; border-radius:var(--radius); width:fit-content; border:1px solid rgba(201,168,76,0.1); }
+  .tab { padding:7px 16px; border-radius:6px; font-size:13px; cursor:pointer; color:var(--text-muted); background:none; border:none; font-family:'DM Sans',sans-serif; transition:all 0.15s; }
+  .tab.active { background:rgba(201,168,76,0.15); color:var(--gold-light); font-weight:500; }
+
+  /* MOBILE GUARD */
+  @media(max-width:900px){
+    .sidebar { width:56px; }
+    .sidebar-logo .brand, .nav-item span, .nav-label, .user-name { display:none; }
+    .nav-item { justify-content:center; padding:10px; }
+    .nav-item .icon { font-size:18px; }
+    .nav-badge { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">
+      <span>CRM Clínico</span>
+      <span class="dot"></span>Instituto Dra. Thais Machado
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-label">Geral</div>
+      <div class="nav-item active" onclick="navigate('dashboard')">
+        <span class="icon">⬡</span><span>Dashboard</span>
+      </div>
+      <div class="nav-item" onclick="navigate('agenda')">
+        <span class="icon">◷</span><span>Agenda</span>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Clínico</div>
+      <div class="nav-item" onclick="navigate('pacientes')">
+        <span class="icon">♡</span><span>Pacientes</span>
+        <span class="nav-badge">24</span>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Comercial</div>
+      <div class="nav-item" onclick="navigate('leads')">
+        <span class="icon">◈</span><span>Pipeline de Leads</span>
+        <span class="nav-badge">11</span>
+      </div>
+      <div class="nav-item" onclick="navigate('leads-lista')">
+        <span class="icon">≡</span><span>Lista de Leads</span>
+      </div>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-pill">
+      <div class="user-avatar">R</div>
+      <span class="user-name">Recepção</span>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <h1 id="page-title">Dashboard <small>Instituto Dra. Thais Machado</small></h1>
+    <div class="search-bar">
+      <span style="color:var(--text-dim);font-size:14px">🔍</span>
+      <input type="text" placeholder="Buscar paciente ou lead…" oninput="handleSearch(this.value)">
+    </div>
+    <button class="btn btn-gold" id="add-btn" onclick="openAddModal()">+ Novo</button>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div id="view-dashboard" class="view active">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="label">Pacientes ativos</div>
+          <div class="value">24</div>
+          <div class="trend up">↑ 3 este mês</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Cirurgias no mês</div>
+          <div class="value">8</div>
+          <div class="trend up">↑ 2 vs. mês ant.</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Leads em aberto</div>
+          <div class="value">11</div>
+          <div class="trend down">↓ 1 perdido</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Taxa de conversão</div>
+          <div class="value">68%</div>
+          <div class="trend up">↑ 5% vs. mês ant.</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="chart-placeholder">
+          <h4>Procedimentos por mês</h4>
+          <div class="bar-chart" id="bar-chart"></div>
+          <div style="height:24px"></div>
+        </div>
+        <div class="chart-placeholder">
+          <h4>Funil comercial</h4>
+          <div class="funnel">
+            <div class="funnel-item">
+              <span class="funnel-label">Novos leads</span>
+              <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:100%;background:rgba(58,111,168,0.3);color:#6CA0D4">28 leads</div></div>
+              <span class="funnel-count">28</span>
+            </div>
+            <div class="funnel-item">
+              <span class="funnel-label">Contato feito</span>
+              <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:80%;background:rgba(201,168,76,0.2);color:var(--gold-light)">22 leads</div></div>
+              <span class="funnel-count">22</span>
+            </div>
+            <div class="funnel-item">
+              <span class="funnel-label">Avaliação</span>
+              <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:57%;background:rgba(140,74,120,0.2);color:#C488B4">16 leads</div></div>
+              <span class="funnel-count">16</span>
+            </div>
+            <div class="funnel-item">
+              <span class="funnel-label">Proposta</span>
+              <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:36%;background:rgba(192,74,58,0.2);color:#D47A6C">10 leads</div></div>
+              <span class="funnel-count">10</span>
+            </div>
+            <div class="funnel-item">
+              <span class="funnel-label">Fechados</span>
+              <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:25%;background:rgba(74,140,92,0.2);color:#7BC498">7 leads</div></div>
+              <span class="funnel-count">7</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px">
+        <div class="table-wrap">
+          <div class="table-header"><h3>Próximas consultas</h3></div>
+          <table>
+            <thead><tr>
+              <th>Paciente</th><th>Procedimento</th><th>Data</th><th>Horário</th><th>Médico</th><th>Status</th>
+            </tr></thead>
+            <tbody>
+              <tr onclick="openDetail('Rafael Mendonça','Transplante Capilar FUE','(85) 99999-0001','rafael@email.com','Masculino','35 anos','NW3','2.800 grafts','Hoje, 09h00','Dra. Thais Machado','Cirurgia confirmada')">
+                <td><div class="avatar-cell"><div class="avatar">RM</div><div><div class="td-name">Rafael Mendonça</div><div class="td-sub">Fortaleza, CE</div></div></div></td>
+                <td>Transplante Capilar FUE</td><td>Hoje</td><td>09h00</td><td>Dra. Thais</td>
+                <td><span class="badge badge-cirurgia">Cirurgia</span></td>
+              </tr>
+              <tr onclick="openDetail('Ana Beatriz Costa','Intradermoterapia','(85) 98888-0002','ana@email.com','Feminino','28 anos','Difuso','Protocolo mensal','Hoje, 14h30','Dra. Thais Machado','Confirmada')">
+                <td><div class="avatar-cell"><div class="avatar">AB</div><div><div class="td-name">Ana Beatriz Costa</div><div class="td-sub">Fortaleza, CE</div></div></div></td>
+                <td>Intradermoterapia</td><td>Hoje</td><td>14h30</td><td>Dra. Thais</td>
+                <td><span class="badge badge-agendado">Agendado</span></td>
+              </tr>
+              <tr onclick="openDetail('Carlos Henrique','Avaliação Inicial','(85) 97777-0003','carlos@email.com','Masculino','42 anos','NW5','A definir','Amanhã, 10h00','Dra. Thais Machado','Pré-avaliação')">
+                <td><div class="avatar-cell"><div class="avatar">CH</div><div><div class="td-name">Carlos Henrique</div><div class="td-sub">Recife, PE</div></div></div></td>
+                <td>Avaliação inicial</td><td>Amanhã</td><td>10h00</td><td>Dra. Thais</td>
+                <td><span class="badge badge-new">Avaliação</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PACIENTES -->
+    <div id="view-pacientes" class="view">
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3>Pacientes</h3>
+          <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterTab(this,'todos')">Todos</button>
+            <button class="filter-tab" onclick="filterTab(this,'cirurgia')">Pós-cirurgia</button>
+            <button class="filter-tab" onclick="filterTab(this,'acompanhamento')">Acompanhamento</button>
+            <button class="filter-tab" onclick="filterTab(this,'retorno')">Retorno</button>
+          </div>
+        </div>
+        <table id="pacientes-table">
+          <thead><tr>
+            <th>Paciente</th><th>Procedimento</th><th>Grau Calvície</th><th>Grafts</th><th>Última Consulta</th><th>Próxima</th><th>Status</th>
+          </tr></thead>
+          <tbody id="pacientes-body">
+            <tr onclick="openDetail('Rafael Mendonça','Transplante Capilar FUE','(85) 99999-0001','rafael@email.com','Masculino','35 anos','NW3','2.800 grafts','09/04/2025','Dra. Thais Machado','Pós-cirurgia dia 7')">
+              <td><div class="avatar-cell"><div class="avatar">RM</div><div><div class="td-name">Rafael Mendonça</div><div class="td-sub">rafael@email.com</div></div></div></td>
+              <td>Transplante FUE</td><td>NW3</td><td>2.800</td><td>09/04/2025</td><td>16/04/2025</td>
+              <td><span class="badge badge-pos">Pós-cirurgia</span></td>
+            </tr>
+            <tr onclick="openDetail('Ana Beatriz Costa','Intradermoterapia','(85) 98888-0002','ana@email.com','Feminino','28 anos','Difuso','—','01/04/2025','Dra. Thais Machado','3ª sessão de 6')">
+              <td><div class="avatar-cell"><div class="avatar">AB</div><div><div class="td-name">Ana Beatriz Costa</div><div class="td-sub">ana@email.com</div></div></div></td>
+              <td>Intradermoterapia</td><td>Difuso</td><td>—</td><td>01/04/2025</td><td>15/04/2025</td>
+              <td><span class="badge badge-agendado">Em tratamento</span></td>
+            </tr>
+            <tr onclick="openDetail('Marcos Oliveira','Transplante FUE + Intradermoterapia','(85) 96666-0004','marcos@email.com','Masculino','48 anos','NW5','3.200 grafts','10/01/2025','Dra. Thais Machado','Retorno 3 meses')">
+              <td><div class="avatar-cell"><div class="avatar">MO</div><div><div class="td-name">Marcos Oliveira</div><div class="td-sub">marcos@email.com</div></div></div></td>
+              <td>FUE + Intradermoterapia</td><td>NW5</td><td>3.200</td><td>10/01/2025</td><td>10/04/2025</td>
+              <td><span class="badge badge-pos">Retorno</span></td>
+            </tr>
+            <tr onclick="openDetail('Fernanda Lima','Ledterapia','(85) 95555-0005','feli@email.com','Feminino','33 anos','Alopecia areata','—','20/03/2025','Dra. Thais Machado','Sessão 5 de 10')">
+              <td><div class="avatar-cell"><div class="avatar">FL</div><div><div class="td-name">Fernanda Lima</div><div class="td-sub">feli@email.com</div></div></div></td>
+              <td>Ledterapia</td><td>Alopecia areata</td><td>—</td><td>20/03/2025</td><td>17/04/2025</td>
+              <td><span class="badge badge-agendado">Em tratamento</span></td>
+            </tr>
+            <tr onclick="openDetail('João Paulo Souza','Transplante FUE','(85) 94444-0006','jp@email.com','Masculino','29 anos','NW2','1.500 grafts','15/12/2024','Dra. Thais Machado','Alta médica')">
+              <td><div class="avatar-cell"><div class="avatar">JP</div><div><div class="td-name">João Paulo Souza</div><div class="td-sub">jp@email.com</div></div></div></td>
+              <td>Transplante FUE</td><td>NW2</td><td>1.500</td><td>15/12/2024</td><td>—</td>
+              <td><span class="badge badge-inativo">Alta médica</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- LEADS KANBAN -->
+    <div id="view-leads" class="view">
+      <div class="kanban">
+        <div class="kanban-col col-novo">
+          <div class="kanban-col-header"><span class="col-name">Novo lead</span><span class="col-count">3</span></div>
+          <div class="kanban-cards">
+            <div class="kanban-card" onclick="openDetail('Thiago Ramos','Lead — Transplante Capilar','(85) 93333-0007','thiago@email.com','Masculino','37 anos','NW4','Interesse: Transplante FUE','—','—','Novo lead via Instagram')">
+              <div class="card-name">Thiago Ramos</div>
+              <div class="card-proc">Interesse: Transplante FUE</div>
+              <div class="card-meta"><span class="badge badge-quente">Quente</span><span class="card-date">Hoje</span></div>
+            </div>
+            <div class="kanban-card" onclick="openDetail('Patrícia Nunes','Lead — Intradermoterapia','(85) 92222-0008','pat@email.com','Feminino','41 anos','Difuso','Interesse: Intradermoterapia','—','—','Lead via WhatsApp')">
+              <div class="card-name">Patrícia Nunes</div>
+              <div class="card-proc">Interesse: Intradermoterapia</div>
+              <div class="card-meta"><span class="badge badge-morno">Morno</span><span class="card-date">Ontem</span></div>
+            </div>
+            <div class="kanban-card">
+              <div class="card-name">Lucas Carvalho</div>
+              <div class="card-proc">Interesse: Transplante FUE</div>
+              <div class="card-meta"><span class="badge badge-frio">Frio</span><span class="card-date">3 dias</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="kanban-col col-contato">
+          <div class="kanban-col-header"><span class="col-name">Contato feito</span><span class="col-count">2</span></div>
+          <div class="kanban-cards">
+            <div class="kanban-card">
+              <div class="card-name">Renata Alves</div>
+              <div class="card-proc">Transplante FUE</div>
+              <div class="card-meta"><span class="badge badge-quente">Quente</span><span class="card-date">Hoje</span></div>
+            </div>
+            <div class="kanban-card">
+              <div class="card-name">Eduardo Martins</div>
+              <div class="card-proc">Transplante FUE + Intradermo</div>
+              <div class="card-meta"><span class="badge badge-morno">Morno</span><span class="card-date">2 dias</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="kanban-col col-avaliacao">
+          <div class="kanban-col-header"><span class="col-name">Avaliação marcada</span><span class="col-count">3</span></div>
+          <div class="kanban-cards">
+            <div class="kanban-card">
+              <div class="card-name">Carlos Henrique</div>
+              <div class="card-proc">Avaliação — Transplante</div>
+              <div class="card-meta"><span class="card-value">—</span><span class="card-date">Amanhã 10h</span></div>
+            </div>
+            <div class="kanban-card">
+              <div class="card-name">Sofia Mendes</div>
+              <div class="card-proc">Avaliação — Ledterapia</div>
+              <div class="card-meta"><span class="card-value">—</span><span class="card-date">17/04 14h</span></div>
+            </div>
+            <div class="kanban-card">
+              <div class="card-name">Bruno Castelo</div>
+              <div class="card-proc">Avaliação — FUE</div>
+              <div class="card-meta"><span class="badge badge-quente">Quente</span><span class="card-date">18/04 9h</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="kanban-col col-proposta">
+          <div class="kanban-col-header"><span class="col-name">Proposta enviada</span><span class="col-count">2</span></div>
+          <div class="kanban-cards">
+            <div class="kanban-card">
+              <div class="card-name">Diego Farias</div>
+              <div class="card-proc">Transplante FUE — 3.000 grafts</div>
+              <div class="card-meta"><span class="card-value">R$ 18.000</span><span class="card-date">10/04</span></div>
+            </div>
+            <div class="kanban-card">
+              <div class="card-name">Isabela Torres</div>
+              <div class="card-proc">Protocolo completo</div>
+              <div class="card-meta"><span class="card-value">R$ 8.500</span><span class="card-date">08/04</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="kanban-col col-fechado">
+          <div class="kanban-col-header"><span class="col-name">Fechado</span><span class="col-count">1</span></div>
+          <div class="kanban-cards">
+            <div class="kanban-card">
+              <div class="card-name">Rafael Mendonça</div>
+              <div class="card-proc">Transplante FUE — 2.800 grafts</div>
+              <div class="card-meta"><span class="card-value">R$ 16.800</span><span class="card-date">02/04</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADS LISTA -->
+    <div id="view-leads-lista" class="view">
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3>Lista de Leads</h3>
+          <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterTab(this,'todos')">Todos</button>
+            <button class="filter-tab" onclick="filterTab(this,'quente')">Quentes</button>
+            <button class="filter-tab" onclick="filterTab(this,'morno')">Mornos</button>
+            <button class="filter-tab" onclick="filterTab(this,'frio')">Frios</button>
+          </div>
+        </div>
+        <table>
+          <thead><tr>
+            <th>Lead</th><th>Interesse</th><th>Origem</th><th>Temperatura</th><th>Etapa</th><th>Último contato</th><th>Valor est.</th>
+          </tr></thead>
+          <tbody>
+            <tr onclick="openDetail('Thiago Ramos','Lead — Transplante Capilar','(85) 93333-0007','thiago@email.com','Masculino','37 anos','NW4','FUE 2.000-3.000 grafts','—','—','Veio via Instagram Stories')">
+              <td><div class="avatar-cell"><div class="avatar">TR</div><div><div class="td-name">Thiago Ramos</div><div class="td-sub">(85) 93333-0007</div></div></div></td>
+              <td>Transplante FUE</td><td>Instagram</td>
+              <td><span class="badge badge-quente">Quente</span></td>
+              <td><span class="badge badge-new">Novo lead</span></td>
+              <td>Hoje</td><td style="color:var(--gold)">R$ 15–18k</td>
+            </tr>
+            <tr>
+              <td><div class="avatar-cell"><div class="avatar">PN</div><div><div class="td-name">Patrícia Nunes</div><div class="td-sub">(85) 92222-0008</div></div></div></td>
+              <td>Intradermoterapia</td><td>WhatsApp</td>
+              <td><span class="badge badge-morno">Morno</span></td>
+              <td><span class="badge badge-new">Novo lead</span></td>
+              <td>Ontem</td><td style="color:var(--gold)">R$ 3–5k</td>
+            </tr>
+            <tr>
+              <td><div class="avatar-cell"><div class="avatar">LC</div><div><div class="td-name">Lucas Carvalho</div><div class="td-sub">(85) 91111-0009</div></div></div></td>
+              <td>Transplante FUE</td><td>Google</td>
+              <td><span class="badge badge-frio">Frio</span></td>
+              <td><span class="badge badge-new">Novo lead</span></td>
+              <td>3 dias</td><td style="color:var(--gold)">R$ 12–16k</td>
+            </tr>
+            <tr>
+              <td><div class="avatar-cell"><div class="avatar">RA</div><div><div class="td-name">Renata Alves</div><div class="td-sub">(85) 90000-0010</div></div></div></td>
+              <td>Transplante FUE</td><td>Indicação</td>
+              <td><span class="badge badge-quente">Quente</span></td>
+              <td><span class="badge badge-agendado">Contato feito</span></td>
+              <td>Hoje</td><td style="color:var(--gold)">R$ 14–18k</td>
+            </tr>
+            <tr>
+              <td><div class="avatar-cell"><div class="avatar">DF</div><div><div class="td-name">Diego Farias</div><div class="td-sub">(85) 89999-0011</div></div></div></td>
+              <td>FUE — 3.000 grafts</td><td>Site</td>
+              <td><span class="badge badge-quente">Quente</span></td>
+              <td><span class="badge badge-pos">Proposta enviada</span></td>
+              <td>10/04</td><td style="color:var(--gold)">R$ 18.000</td>
+            </tr>
+            <tr>
+              <td><div class="avatar-cell"><div class="avatar">IT</div><div><div class="td-name">Isabela Torres</div><div class="td-sub">(85) 88888-0012</div></div></div></td>
+              <td>Protocolo completo</td><td>Instagram</td>
+              <td><span class="badge badge-morno">Morno</span></td>
+              <td><span class="badge badge-pos">Proposta enviada</span></td>
+              <td>08/04</td><td style="color:var(--gold)">R$ 8.500</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- AGENDA -->
+    <div id="view-agenda" class="view">
+      <div class="agenda-grid">
+        <div class="calendar-wrap">
+          <div class="cal-header">
+            <h3 id="cal-month">Abril 2025</h3>
+            <div style="display:flex;gap:6px">
+              <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+              <button class="cal-nav" onclick="changeMonth(1)">›</button>
+            </div>
+          </div>
+          <div class="cal-days-header">
+            <div class="cal-day-name">Dom</div><div class="cal-day-name">Seg</div>
+            <div class="cal-day-name">Ter</div><div class="cal-day-name">Qua</div>
+            <div class="cal-day-name">Qui</div><div class="cal-day-name">Sex</div>
+            <div class="cal-day-name">Sáb</div>
+          </div>
+          <div class="cal-days" id="cal-days"></div>
+        </div>
+        <div class="agenda-sidebar">
+          <div class="agenda-card">
+            <h4>Hoje — 15 de Abril</h4>
+            <div class="appt-item cirurgia">
+              <div class="appt-time">09h00 — Cirurgia</div>
+              <div class="appt-name">Rafael Mendonça</div>
+              <div class="appt-proc">Transplante FUE · 2.800 grafts</div>
+            </div>
+            <div class="appt-item consulta">
+              <div class="appt-time">14h30 — Consulta</div>
+              <div class="appt-name">Ana Beatriz Costa</div>
+              <div class="appt-proc">Intradermoterapia · Sessão 3</div>
+            </div>
+          </div>
+          <div class="agenda-card">
+            <h4>Amanhã — 16 de Abril</h4>
+            <div class="appt-item">
+              <div class="appt-time">10h00 — Avaliação</div>
+              <div class="appt-name">Carlos Henrique</div>
+              <div class="appt-proc">Avaliação inicial · Lead</div>
+            </div>
+            <div class="appt-item">
+              <div class="appt-time">15h00 — Retorno</div>
+              <div class="appt-name">Marcos Oliveira</div>
+              <div class="appt-proc">Retorno pós-cirurgia · 3 meses</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<!-- DETAIL PANEL -->
+<div class="detail-overlay" id="detail-panel">
+  <div class="detail-top">
+    <div class="detail-avatar" id="dp-avatar">RM</div>
+    <div class="detail-info">
+      <h2 id="dp-name">Rafael Mendonça</h2>
+      <p id="dp-proc">Transplante Capilar FUE</p>
+      <div style="margin-top:8px" id="dp-badge"></div>
+    </div>
+    <button class="detail-close" onclick="closeDetail()">✕</button>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section">
+      <h4>Dados de contato</h4>
+      <div class="info-grid">
+        <div class="info-item"><div class="info-label">Telefone</div><div class="info-val" id="dp-tel">—</div></div>
+        <div class="info-item"><div class="info-label">E-mail</div><div class="info-val" id="dp-email" style="font-size:11px">—</div></div>
+        <div class="info-item"><div class="info-label">Sexo</div><div class="info-val" id="dp-sexo">—</div></div>
+        <div class="info-item"><div class="info-label">Idade</div><div class="info-val" id="dp-idade">—</div></div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <h4>Clínico</h4>
+      <div class="info-grid">
+        <div class="info-item"><div class="info-label">Grau calvície</div><div class="info-val" id="dp-grau">—</div></div>
+        <div class="info-item"><div class="info-label">Grafts / detalhe</div><div class="info-val" id="dp-grafts">—</div></div>
+        <div class="info-item"><div class="info-label">Próxima consulta</div><div class="info-val" id="dp-proxima">—</div></div>
+        <div class="info-item"><div class="info-label">Médico resp.</div><div class="info-val" id="dp-medico">—</div></div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <h4>Linha do tempo</h4>
+      <div class="timeline" id="dp-timeline"></div>
+    </div>
+    <div class="detail-section">
+      <h4>Observações</h4>
+      <div class="note-area">
+        <textarea placeholder="Adicionar observação sobre este paciente/lead…" id="dp-notes"></textarea>
+        <div class="note-save"><button class="btn btn-ghost" style="font-size:12px;padding:5px 12px">Salvar nota</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NOVO PACIENTE / LEAD -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 id="modal-title">Novo Cadastro</h2>
+    <div class="tabs" style="margin-bottom:20px">
+      <button class="tab active" onclick="switchModalTab(this,'paciente')">Paciente</button>
+      <button class="tab" onclick="switchModalTab(this,'lead')">Lead Comercial</button>
+    </div>
+    <div id="modal-paciente">
+      <div class="form-divider">Dados pessoais</div>
+      <div class="form-row">
+        <div class="form-group"><label>Nome completo</label><input type="text" placeholder="Ex: Rafael Mendonça"></div>
+        <div class="form-group"><label>Data de nascimento</label><input type="date"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Telefone / WhatsApp</label><input type="text" placeholder="(85) 99999-0000"></div>
+        <div class="form-group"><label>E-mail</label><input type="email" placeholder="paciente@email.com"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Sexo</label>
+          <select><option>Masculino</option><option>Feminino</option><option>Outro</option></select>
+        </div>
+        <div class="form-group"><label>Cidade / UF</label><input type="text" placeholder="Fortaleza, CE"></div>
+      </div>
+      <div class="form-divider">Dados clínicos</div>
+      <div class="form-row">
+        <div class="form-group"><label>Procedimento</label>
+          <select>
+            <option>Transplante Capilar FUE</option>
+            <option>Intradermoterapia</option>
+            <option>Microinfusão de Medicamentos</option>
+            <option>Ledterapia</option>
+            <option>Medicamentos / Protocolo</option>
+            <option>Avaliação inicial</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Grau de calvície (Norwood)</label>
+          <select><option>NW1</option><option>NW2</option><option>NW3</option><option>NW4</option><option>NW5</option><option>NW6</option><option>NW7</option><option>Difuso</option><option>Alopecia areata</option><option>A definir</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Quantidade de grafts</label><input type="text" placeholder="Ex: 2.800"></div>
+        <div class="form-group"><label>Médico responsável</label><input type="text" value="Dra. Thais Machado"></div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group"><label>Observações clínicas</label><textarea placeholder="Histórico, alergias, medicamentos em uso…"></textarea></div>
+      </div>
+      <div class="form-divider">Agendamento</div>
+      <div class="form-row">
+        <div class="form-group"><label>Data da consulta</label><input type="date"></div>
+        <div class="form-group"><label>Horário</label><input type="time"></div>
+      </div>
+    </div>
+    <div id="modal-lead" style="display:none">
+      <div class="form-divider">Dados do lead</div>
+      <div class="form-row">
+        <div class="form-group"><label>Nome</label><input type="text" placeholder="Ex: Thiago Ramos"></div>
+        <div class="form-group"><label>Telefone / WhatsApp</label><input type="text" placeholder="(85) 99999-0000"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>E-mail</label><input type="email" placeholder="lead@email.com"></div>
+        <div class="form-group"><label>Sexo</label>
+          <select><option>Masculino</option><option>Feminino</option><option>Outro</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Interesse</label>
+          <select>
+            <option>Transplante Capilar FUE</option>
+            <option>Intradermoterapia</option>
+            <option>Ledterapia</option>
+            <option>Protocolo completo</option>
+            <option>A definir</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Temperatura</label>
+          <select><option>Quente</option><option>Morno</option><option>Frio</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Origem do lead</label>
+          <select>
+            <option>Instagram</option><option>WhatsApp</option><option>Google</option>
+            <option>Indicação</option><option>Site</option><option>TikTok</option><option>Outro</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Valor estimado</label><input type="text" placeholder="R$ 0,00"></div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group"><label>Observações</label><textarea placeholder="Como chegou, o que buscava, objeções…"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="closeModal()">Salvar cadastro</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// NAV
+function navigate(view) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const navMap = {dashboard:'dashboard',agenda:'agenda',pacientes:'pacientes',leads:'leads','leads-lista':'leads-lista'};
+  const titleMap = {dashboard:'Dashboard',agenda:'Agenda',pacientes:'Pacientes',leads:'Pipeline de Leads','leads-lista':'Lista de Leads'};
+  document.getElementById('view-'+view).classList.add('active');
+  document.getElementById('page-title').innerHTML = titleMap[view] + ' <small>Instituto Dra. Thais Machado</small>';
+  const items = document.querySelectorAll('.nav-item');
+  items.forEach(i => { if(i.getAttribute('onclick') && i.getAttribute('onclick').includes("'"+view+"'")) i.classList.add('active'); });
+  closeDetail();
+}
+
+// DETAIL
+function openDetail(name, proc, tel, email, sexo, idade, grau, grafts, proxima, medico, obs) {
+  const p = document.getElementById('detail-panel');
+  const initials = name.split(' ').slice(0,2).map(w=>w[0]).join('');
+  document.getElementById('dp-avatar').textContent = initials;
+  document.getElementById('dp-name').textContent = name;
+  document.getElementById('dp-proc').textContent = proc;
+  document.getElementById('dp-tel').textContent = tel || '—';
+  document.getElementById('dp-email').textContent = email || '—';
+  document.getElementById('dp-sexo').textContent = sexo || '—';
+  document.getElementById('dp-idade').textContent = idade || '—';
+  document.getElementById('dp-grau').textContent = grau || '—';
+  document.getElementById('dp-grafts').textContent = grafts || '—';
+  document.getElementById('dp-proxima').textContent = proxima || '—';
+  document.getElementById('dp-medico').textContent = medico || '—';
+  document.getElementById('dp-notes').value = obs || '';
+  // timeline
+  const tl = document.getElementById('dp-timeline');
+  tl.innerHTML = `
+    <div class="timeline-item"><div class="tl-dot gold"></div><div class="tl-content"><div class="tl-action">Cadastro criado</div><div class="tl-date">01/04/2025</div></div></div>
+    <div class="timeline-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-action">Primeira avaliação realizada</div><div class="tl-date">03/04/2025</div></div></div>
+    <div class="timeline-item"><div class="tl-dot gold"></div><div class="tl-content"><div class="tl-action">Procedimento agendado</div><div class="tl-date">05/04/2025</div></div></div>
+    <div class="timeline-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-action">${obs || 'Sem observações recentes'}</div><div class="tl-date">15/04/2025</div></div></div>
+  `;
+  p.classList.add('open');
+}
+function closeDetail() { document.getElementById('detail-panel').classList.remove('open'); }
+
+// MODAL
+function openAddModal() { document.getElementById('add-modal').classList.add('open'); }
+function closeModal() { document.getElementById('add-modal').classList.remove('open'); }
+function switchModalTab(el, tab) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('modal-paciente').style.display = tab==='paciente'?'block':'none';
+  document.getElementById('modal-lead').style.display = tab==='lead'?'block':'none';
+}
+
+// FILTER TABS
+function filterTab(el, val) {
+  el.closest('.filter-tabs').querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// SEARCH
+function handleSearch(val) { /* expand later */ }
+
+// CALENDAR
+let calYear = 2025, calMonth = 3; // April = index 3
+const months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const eventDays = [15, 16, 17, 22, 24, 29];
+function renderCalendar() {
+  document.getElementById('cal-month').textContent = months[calMonth] + ' ' + calYear;
+  const days = document.getElementById('cal-days');
+  days.innerHTML = '';
+  const first = new Date(calYear, calMonth, 1).getDay();
+  const total = new Date(calYear, calMonth+1, 0).getDate();
+  const prevTotal = new Date(calYear, calMonth, 0).getDate();
+  for(let i=0;i<first;i++){
+    const d = document.createElement('div');
+    d.className='cal-day other-month';
+    d.textContent = prevTotal - first + 1 + i;
+    days.appendChild(d);
+  }
+  for(let i=1;i<=total;i++){
+    const d = document.createElement('div');
+    d.className='cal-day' + (i===15&&calMonth===3&&calYear===2025?' today':'') + (eventDays.includes(i)?' has-event':'');
+    d.textContent = i;
+    days.appendChild(d);
+  }
+}
+function changeMonth(dir) {
+  calMonth += dir;
+  if(calMonth>11){calMonth=0;calYear++;}
+  if(calMonth<0){calMonth=11;calYear--;}
+  renderCalendar();
+}
+renderCalendar();
+
+// BAR CHART
+const barData = [{l:'Nov',v:5},{l:'Dez',v:7},{l:'Jan',v:6},{l:'Fev',v:8},{l:'Mar',v:9},{l:'Abr',v:8}];
+const maxV = Math.max(...barData.map(d=>d.v));
+const bc = document.getElementById('bar-chart');
+barData.forEach(d=>{
+  const b = document.createElement('div');
+  b.className='bar';
+  b.style.height = (d.v/maxV*100)+'%';
+  b.innerHTML = `<span class="bar-val">${d.v}</span><span class="bar-label">${d.l}</span>`;
+  bc.appendChild(b);
+});
+
+// Close on overlay click
+document.getElementById('add-modal').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+document.getElementById('detail-panel').addEventListener('click', function(e){ if(e.target===this) closeDetail(); });
+</script>
+</body>
+</html>
