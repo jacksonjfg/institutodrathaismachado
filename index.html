@@ -856,6 +856,32 @@ body.sidebar-collapsed .sidebar *:not(.sidebar-toggle-v8) { visibility:hidden; }
   .schedule-actions-v11 .btn { justify-content:center; }
 }
 
+
+/* DRA_THAIS_SIDEBAR_ESCAPE_V12 */
+.sidebar-escape-v12 {
+  position:fixed;
+  top:14px;
+  left:14px;
+  z-index:20000;
+  width:38px;
+  height:38px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:#fff;
+  color:var(--gold-dark);
+  box-shadow:var(--shadow);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-size:18px;
+}
+.sidebar-escape-v12:hover { border-color:var(--gold); background:var(--gold-pale); }
+.sidebar .sidebar-toggle-v8 { display:none !important; }
+body:not(.sidebar-collapsed) .sidebar-escape-v12 { left:14px; }
+body:not(.sidebar-collapsed) .topbar { padding-left:58px; }
+body.sidebar-collapsed .topbar { padding-left:58px !important; }
+
 </style>
 </head>
 <body>
@@ -4400,6 +4426,26 @@ onAuthStateChanged(crm.auth, async user => {
   window.renderDashboardV11 = renderDashboard;
   document.addEventListener('DOMContentLoaded', boot);
   if(document.readyState !== 'loading') boot();
+})();
+</script>
+
+
+<script>
+/* DRA_THAIS_SIDEBAR_ESCAPE_V12 */
+(function(){
+  'use strict';
+  function ensureSidebarEscape(){
+    if(!document.getElementById('sidebar-escape-v12')) {
+      document.body.insertAdjacentHTML('afterbegin','<button class="sidebar-escape-v12" id="sidebar-escape-v12" type="button" title="Expandir/recolher menu">☰</button>');
+    }
+    const btn = document.getElementById('sidebar-escape-v12');
+    btn.onclick = function(){
+      document.body.classList.toggle('sidebar-collapsed');
+      localStorage.setItem('dra_thais_sidebar_collapsed', document.body.classList.contains('sidebar-collapsed') ? '1' : '0');
+    };
+  }
+  document.addEventListener('DOMContentLoaded', ensureSidebarEscape);
+  if(document.readyState !== 'loading') ensureSidebarEscape();
 })();
 </script>
 
