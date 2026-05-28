@@ -882,6 +882,59 @@ body:not(.sidebar-collapsed) .sidebar-escape-v12 { left:14px; }
 body:not(.sidebar-collapsed) .topbar { padding-left:58px; }
 body.sidebar-collapsed .topbar { padding-left:58px !important; }
 
+
+/* DRA_THAIS_DUPLICATES_V13 */
+.duplicate-modal-v13 {
+  position:fixed; inset:0; z-index:23000; display:none; align-items:center; justify-content:center;
+  background:rgba(28,24,18,.42); padding:18px;
+}
+.duplicate-modal-v13.open { display:flex; }
+.duplicate-card-v13 {
+  width:min(560px, 100%); background:#fff; border:1px solid var(--border); border-radius:12px;
+  box-shadow:var(--shadow-lg); overflow:hidden;
+}
+.duplicate-card-v13 header { padding:18px 20px; border-bottom:1px solid var(--border); }
+.duplicate-card-v13 h3 { font-family:'Playfair Display',serif; font-size:24px; font-weight:500; }
+.duplicate-card-v13 p { color:var(--text-2); font-size:13px; line-height:1.45; margin-top:6px; }
+.duplicate-body-v13 { padding:16px 20px; display:grid; gap:10px; }
+.duplicate-item-v13 { border:1px solid var(--border); border-radius:10px; padding:12px; background:var(--bg); }
+.duplicate-item-v13 strong { display:block; font-size:14px; color:var(--text); margin-bottom:4px; }
+.duplicate-item-v13 span { display:block; font-size:12px; color:var(--text-2); }
+.duplicate-actions-v13 { padding:14px 20px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap; }
+@media (max-width:700px){ .duplicate-actions-v13 { flex-direction:column; } .duplicate-actions-v13 .btn { justify-content:center; } }
+
+
+
+/* DRA_THAIS_EDIT_LEAD_V14 */
+.edit-lead-modal-v14 {
+  position:fixed; inset:0; z-index:24000; display:none; align-items:center; justify-content:center;
+  background:rgba(28,24,18,.42); padding:18px;
+}
+.edit-lead-modal-v14.open { display:flex; }
+.edit-lead-card-v14 {
+  width:min(720px,100%); max-height:92vh; overflow:auto; background:#fff; border:1px solid var(--border);
+  border-radius:12px; box-shadow:var(--shadow-lg);
+}
+.edit-lead-card-v14 header {
+  padding:18px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; gap:12px; align-items:center;
+}
+.edit-lead-card-v14 h3 { font-family:'Playfair Display',serif; font-size:24px; font-weight:500; }
+.edit-lead-body-v14 { padding:18px 20px; display:grid; gap:12px; }
+.edit-lead-grid-v14 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.edit-field-v14 label { display:block; font-size:12px; color:var(--text-2); font-weight:600; margin-bottom:6px; }
+.edit-field-v14 input,.edit-field-v14 select,.edit-field-v14 textarea {
+  width:100%; border:1px solid var(--border-2); border-radius:8px; padding:10px 12px;
+  font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); outline:none;
+}
+.edit-field-v14 textarea { min-height:96px; resize:vertical; }
+.edit-lead-actions-v14 { padding:14px 20px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap; }
+.lead-edit-btn-v14 { width:100%; justify-content:center; margin-top:8px; }
+@media (max-width:700px){
+  .edit-lead-grid-v14 { grid-template-columns:1fr; }
+  .edit-lead-actions-v14 { flex-direction:column; }
+  .edit-lead-actions-v14 .btn { justify-content:center; }
+}
+
 </style>
 </head>
 <body>
@@ -4448,6 +4501,350 @@ onAuthStateChanged(crm.auth, async user => {
   if(document.readyState !== 'loading') ensureSidebarEscape();
 })();
 </script>
+
+
+<script>
+/* DRA_THAIS_DUPLICATES_V13 */
+(function(){
+  'use strict';
+  const LEADS_KEY = 'dra_thais_crm_leads_v8';
+  const PATIENTS_KEY = 'dra_thais_crm_patients_v11';
+  let pendingSave = null;
+
+  function esc(v){ return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function norm(v){ return String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim(); }
+  function digits(v){ return String(v || '').replace(/\D/g,''); }
+  function phoneKey(v){
+    const d = digits(v);
+    if(!d || d.length < 8) return '';
+    return d.slice(-11);
+  }
+  function cpfKey(v){
+    const d = digits(v);
+    return d.length >= 11 ? d.slice(-11) : '';
+  }
+  function emailKey(v){ return String(v || '').trim().toLowerCase(); }
+  function loadJSON(key, fallback){
+    try { const value = JSON.parse(localStorage.getItem(key) || 'null'); return value ?? fallback; }
+    catch(e){ return fallback; }
+  }
+  function leads(){ return loadJSON(LEADS_KEY, window.__draThaisLeadsV8 || []); }
+  function patients(){
+    const stored = loadJSON(PATIENTS_KEY, []);
+    if(stored.length) return stored;
+    return [
+      {id:'pac-teste-m', name:'Vanderley de Moraes Felix', tel:'(85) 99996-4780', email:'Vanderleyfelix10@gmail.com'},
+      {id:'pac-teste-f', name:'Angela de Fátima Nascimento', tel:'(85) 85993-4128', email:'angela.nascimento80@outlook.com'}
+    ];
+  }
+  function nameSimilarity(a,b){
+    const aw = new Set(norm(a).split(' ').filter(w => w.length > 2));
+    const bw = new Set(norm(b).split(' ').filter(w => w.length > 2));
+    if(!aw.size || !bw.size) return 0;
+    let common = 0;
+    aw.forEach(w => { if(bw.has(w)) common++; });
+    return common / Math.max(aw.size, bw.size);
+  }
+  function readModalRecord(){
+    const isLead = document.getElementById('m-lead')?.style.display !== 'none';
+    const root = document.getElementById(isLead ? 'm-lead' : 'm-paciente');
+    const inputs = Array.from(root?.querySelectorAll('input,select,textarea') || []);
+    if(isLead) {
+      return {
+        type:'lead',
+        name:inputs[0]?.value?.trim() || '',
+        tel:inputs[1]?.value?.trim() || '',
+        cpf:inputs[2]?.value?.trim() || '',
+        email:inputs[4]?.value?.trim() || ''
+      };
+    }
+    return {
+      type:'patient',
+      name:inputs[0]?.value?.trim() || '',
+      tel:inputs[3]?.value?.trim() || '',
+      cpf:inputs[2]?.value?.trim() || '',
+      email:inputs[4]?.value?.trim() || ''
+    };
+  }
+  function findDuplicates(record){
+    const pKey = phoneKey(record.tel);
+    const cKey = cpfKey(record.cpf);
+    const eKey = emailKey(record.email);
+    const matches = [];
+    function check(item, type){
+      const reasons = [];
+      if(pKey && phoneKey(item.tel || item.telefone || item.whatsapp) === pKey) reasons.push('telefone/WhatsApp igual');
+      if(cKey && cpfKey(item.cpf) === cKey) reasons.push('CPF igual');
+      if(eKey && emailKey(item.email) === eKey) reasons.push('e-mail igual');
+      const sim = nameSimilarity(record.name, item.name || item.nome);
+      if(!reasons.length && sim >= 0.86) reasons.push('nome muito parecido');
+      if(reasons.length) matches.push({type, item, reasons, strong: reasons.some(r => !r.includes('nome'))});
+    }
+    leads().forEach(l => check(l, 'lead'));
+    patients().forEach(p => check(p, 'patient'));
+    // Avoid flagging a completely empty name against unrelated records.
+    return matches.filter(m => record.name || m.strong);
+  }
+  function ensureModal(){
+    if(document.getElementById('duplicate-modal-v13')) return;
+    document.body.insertAdjacentHTML('beforeend',
+      '<div class="duplicate-modal-v13" id="duplicate-modal-v13">'+
+        '<div class="duplicate-card-v13">'+
+          '<header><h3>Cadastro possivelmente duplicado</h3><p id="duplicate-copy-v13"></p></header>'+
+          '<div class="duplicate-body-v13" id="duplicate-list-v13"></div>'+
+          '<div class="duplicate-actions-v13">'+
+            '<button class="btn btn-outline" type="button" onclick="closeDuplicateModalV13()">Cancelar</button>'+
+            '<button class="btn btn-outline" type="button" id="dup-open-v13">Abrir existente</button>'+
+            '<button class="btn btn-gold" type="button" id="dup-force-v13">Salvar mesmo assim</button>'+
+          '</div>'+
+        '</div>'+
+      '</div>');
+  }
+  function renderDuplicateModal(matches, record, continueSave){
+    ensureModal();
+    pendingSave = continueSave;
+    const strong = matches.some(m => m.strong);
+    document.getElementById('duplicate-copy-v13').textContent = strong
+      ? 'Encontramos CPF, telefone ou e-mail já cadastrado. Para evitar duplicidade, confira antes de criar outro cadastro.'
+      : 'Encontramos nome muito parecido. Confira se é a mesma pessoa antes de salvar.';
+    document.getElementById('duplicate-list-v13').innerHTML = matches.slice(0,5).map(m => {
+      const item = m.item;
+      return '<div class="duplicate-item-v13">'+
+        '<strong>'+esc(item.name || item.nome || 'Sem nome')+'</strong>'+
+        '<span>'+(m.type === 'lead' ? 'Lead comercial' : 'Prontuário/Paciente')+' · '+esc(m.reasons.join(', '))+'</span>'+
+        '<span>'+esc(item.tel || item.telefone || item.whatsapp || 'Sem telefone')+' · '+esc(item.email || 'Sem e-mail')+'</span>'+
+      '</div>';
+    }).join('');
+    const first = matches[0];
+    document.getElementById('dup-open-v13').onclick = () => openDuplicate(first);
+    document.getElementById('dup-force-v13').onclick = () => {
+      document.getElementById('duplicate-modal-v13').classList.remove('open');
+      const fn = pendingSave;
+      pendingSave = null;
+      if(typeof fn === 'function') fn();
+    };
+    document.getElementById('duplicate-modal-v13').classList.add('open');
+  }
+  window.closeDuplicateModalV13 = function(){
+    document.getElementById('duplicate-modal-v13')?.classList.remove('open');
+    pendingSave = null;
+  };
+  function openDuplicate(match){
+    if(!match) return;
+    closeDuplicateModalV13();
+    if(match.type === 'lead') {
+      const id = match.item.id;
+      if(typeof window.openLeadV10 === 'function') window.openLeadV10(id);
+      else if(typeof window.openLeadV9 === 'function') window.openLeadV9(id);
+      const navItem = document.querySelector('.nav-item[onclick*="leads"]');
+      if(navItem && typeof nav === 'function') nav(navItem, 'leads');
+      return;
+    }
+    if(match.item.id && typeof window.openPatientV11 === 'function') window.openPatientV11(match.item.id);
+    else if(typeof window.openPatient === 'function') window.openPatient(match.item.name, match.item.sub || '', match.item.tel || '', match.item.email || '', '—', '—', match.item.proc || '', 'Dra. Thais Machado', match.item.ultimo || 'Hoje', '0', '0', 'Particular');
+  }
+  function patchSaveButton(){
+    const save = document.querySelector('#modal-main .modal-foot .btn-gold');
+    if(!save || save.dataset.dupV13 === '1') return;
+    save.dataset.dupV13 = '1';
+    save.addEventListener('click', function(e){
+      const record = readModalRecord();
+      if(!record.name && !record.tel && !record.email && !record.cpf) return;
+      if(save.dataset.skipDupOnce === '1') {
+        save.dataset.skipDupOnce = '0';
+        return;
+      }
+      const matches = findDuplicates(record);
+      if(!matches.length) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      renderDuplicateModal(matches, record, () => {
+        save.dataset.skipDupOnce = '1';
+        save.click();
+      });
+    }, true);
+  }
+  document.addEventListener('DOMContentLoaded', patchSaveButton);
+  if(document.readyState !== 'loading') patchSaveButton();
+})();
+</script>
+
+
+
+<script>
+/* DRA_THAIS_EDIT_LEAD_V14 */
+(function(){
+  'use strict';
+  const LEADS_KEY = 'dra_thais_crm_leads_v8';
+  const STAGES = ['Novo contato','Pré-avaliação','Orçamento enviado','Negociação','Fechado','Perdido'];
+  const TEMPS = ['Quente','Morno','Frio'];
+  const CHANNELS = ['Instagram','WhatsApp','Site','Indicação','Google','Manual','Moskit','Moskit Boost','MOSKIT_API_V2'];
+  let activeEditLeadId = null;
+
+  function esc(v){ return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function norm(v){ return String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
+  function loadLeads(){ try { return JSON.parse(localStorage.getItem(LEADS_KEY) || '[]'); } catch(e){ return window.__draThaisLeadsV8 || []; } }
+  function saveLeads(leads){ localStorage.setItem(LEADS_KEY, JSON.stringify(leads)); window.__draThaisLeadsV8 = leads; }
+  function normalizeStage(stage){
+    const s = norm(stage).replace(/\s+/g,' ').trim();
+    if(s.startsWith('pre')) return 'Pré-avaliação';
+    if(s.startsWith('orc')) return 'Orçamento enviado';
+    if(s.startsWith('neg')) return 'Negociação';
+    if(s.startsWith('fechado')) return 'Fechado';
+    if(s.startsWith('perdido')) return 'Perdido';
+    return 'Novo contato';
+  }
+  async function syncLead(lead){
+    try {
+      if(window.firebaseCRM?.auth?.currentUser && window.firebaseCRM.saveClinicDoc) {
+        await window.firebaseCRM.saveClinicDoc('leads', lead.id, Object.assign({}, lead, {updatedAt:new Date().toISOString()}));
+      }
+    } catch(e) { console.warn('Lead salvo localmente, mas não sincronizou no Firestore:', e); }
+  }
+  function findLead(id){
+    const leads = loadLeads();
+    return {leads, lead: leads.find(l => l.id === id)};
+  }
+  function currentPanelLead(){
+    if(activeEditLeadId) {
+      const found = findLead(activeEditLeadId).lead;
+      if(found) return found;
+    }
+    const name = document.getElementById('lp-name')?.textContent || '';
+    return loadLeads().find(l => l.name === name);
+  }
+  function ensureModal(){
+    if(document.getElementById('edit-lead-modal-v14')) return;
+    document.body.insertAdjacentHTML('beforeend', `
+      <div class="edit-lead-modal-v14" id="edit-lead-modal-v14">
+        <div class="edit-lead-card-v14">
+          <header><h3>Editar lead</h3><button class="dp-close" type="button" onclick="closeEditLeadV14()">×</button></header>
+          <div class="edit-lead-body-v14">
+            <div class="edit-lead-grid-v14">
+              <div class="edit-field-v14"><label>Nome</label><input id="el-name-v14"></div>
+              <div class="edit-field-v14"><label>Telefone / WhatsApp</label><input id="el-tel-v14"></div>
+            </div>
+            <div class="edit-lead-grid-v14">
+              <div class="edit-field-v14"><label>E-mail</label><input id="el-email-v14" type="email"></div>
+              <div class="edit-field-v14"><label>CPF</label><input id="el-cpf-v14"></div>
+            </div>
+            <div class="edit-lead-grid-v14">
+              <div class="edit-field-v14"><label>Procedimento / Interesse</label><input id="el-proc-v14"></div>
+              <div class="edit-field-v14"><label>Valor estimado</label><input id="el-valor-v14"></div>
+            </div>
+            <div class="edit-lead-grid-v14">
+              <div class="edit-field-v14"><label>Canal</label><select id="el-canal-v14">${CHANNELS.map(c => `<option>${c}</option>`).join('')}</select></div>
+              <div class="edit-field-v14"><label>Temperatura</label><select id="el-temp-v14">${TEMPS.map(t => `<option>${t}</option>`).join('')}</select></div>
+            </div>
+            <div class="edit-lead-grid-v14">
+              <div class="edit-field-v14"><label>Status</label><select id="el-etapa-v14">${STAGES.map(s => `<option>${s}</option>`).join('')}</select></div>
+              <div class="edit-field-v14"><label>Idade / faixa etária</label><input id="el-idade-v14"></div>
+            </div>
+            <div class="edit-field-v14"><label>Observações</label><textarea id="el-obs-v14"></textarea></div>
+          </div>
+          <div class="edit-lead-actions-v14">
+            <button class="btn btn-outline" type="button" onclick="closeEditLeadV14()">Cancelar</button>
+            <button class="btn btn-gold" type="button" onclick="saveEditLeadV14()">Salvar lead</button>
+          </div>
+        </div>
+      </div>`);
+  }
+  function fillModal(lead){
+    document.getElementById('el-name-v14').value = lead.name || '';
+    document.getElementById('el-tel-v14').value = lead.tel || '';
+    document.getElementById('el-email-v14').value = lead.email || '';
+    document.getElementById('el-cpf-v14').value = lead.cpf || '';
+    document.getElementById('el-proc-v14').value = lead.proc || '';
+    document.getElementById('el-valor-v14').value = lead.valor || '';
+    setSelect('el-canal-v14', lead.canal || 'Manual');
+    setSelect('el-temp-v14', lead.temp || 'Morno');
+    setSelect('el-etapa-v14', normalizeStage(lead.etapa));
+    document.getElementById('el-idade-v14').value = lead.idade || '';
+    document.getElementById('el-obs-v14').value = lead.obs || '';
+  }
+  function setSelect(id, value){
+    const el = document.getElementById(id);
+    if(!el) return;
+    if(!Array.from(el.options).some(o => o.value === value)) el.insertAdjacentHTML('beforeend', '<option>'+esc(value)+'</option>');
+    el.value = value;
+  }
+  function refreshViews(id){
+    if(typeof window.renderLeadViewsV6 === 'function') window.renderLeadViewsV6();
+    if(typeof window.renderDashboardV11 === 'function') window.renderDashboardV11();
+    const open = window.openLeadV10 || window.openLeadV9 || window.openLeadV8 || window.openLeadV7;
+    if(typeof open === 'function') open(id);
+  }
+  function addEditButton(id){
+    const panel = document.getElementById('lead-panel');
+    if(!panel) return;
+    panel.querySelectorAll('.lead-edit-btn-v14').forEach(b => b.remove());
+    const head = panel.querySelector('.dp-info');
+    if(head) head.insertAdjacentHTML('beforeend', `<button class="btn btn-outline btn-sm lead-edit-btn-v14" type="button" data-lead-id="${esc(id)}">Editar dados do lead</button>`);
+    const btn = panel.querySelector('.lead-edit-btn-v14');
+    if(btn) btn.onclick = () => window.openEditLeadV14(btn.dataset.leadId);
+  }
+  function wrapOpeners(){
+    ['openLeadV10','openLeadV9','openLeadV8','openLeadV7'].forEach(name => {
+      const old = window[name];
+      if(typeof old === 'function' && !old.v14EditWrapped) {
+        const wrapped = function(id){
+          activeEditLeadId = id;
+          const result = old.apply(this, arguments);
+          setTimeout(() => addEditButton(id), 0);
+          return result;
+        };
+        wrapped.v14EditWrapped = true;
+        window[name] = wrapped;
+      }
+    });
+  }
+  window.openEditLeadV14 = function(id){
+    const {lead} = findLead(id);
+    if(!lead) return alert('Lead não encontrado.');
+    activeEditLeadId = id;
+    ensureModal();
+    fillModal(lead);
+    document.getElementById('edit-lead-modal-v14').classList.add('open');
+  };
+  window.closeEditLeadV14 = function(){
+    document.getElementById('edit-lead-modal-v14')?.classList.remove('open');
+  };
+  window.saveEditLeadV14 = async function(){
+    const {leads, lead} = findLead(activeEditLeadId);
+    if(!lead) return alert('Lead não encontrado.');
+    const name = document.getElementById('el-name-v14').value.trim();
+    const tel = document.getElementById('el-tel-v14').value.trim();
+    const email = document.getElementById('el-email-v14').value.trim();
+    const cpf = document.getElementById('el-cpf-v14').value.trim();
+    if(!name || !(tel || email || cpf)) return alert('Preencha nome e pelo menos telefone, e-mail ou CPF.');
+    Object.assign(lead, {
+      name,
+      tel,
+      email,
+      cpf,
+      proc: document.getElementById('el-proc-v14').value.trim() || 'Contato comercial',
+      valor: document.getElementById('el-valor-v14').value.trim(),
+      canal: document.getElementById('el-canal-v14').value,
+      temp: document.getElementById('el-temp-v14').value,
+      etapa: normalizeStage(document.getElementById('el-etapa-v14').value),
+      idade: document.getElementById('el-idade-v14').value.trim(),
+      obs: document.getElementById('el-obs-v14').value.trim(),
+      ultimo: 'Agora'
+    });
+    saveLeads(leads);
+    await syncLead(lead);
+    closeEditLeadV14();
+    refreshViews(lead.id);
+  };
+  function boot(){
+    ensureModal();
+    wrapOpeners();
+  }
+  document.addEventListener('DOMContentLoaded', boot);
+  if(document.readyState !== 'loading') boot();
+})();
+</script>
+
 
 </body>
 </html>
