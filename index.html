@@ -499,6 +499,86 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .firebase-mini-btn:hover { background:var(--gold-pale); }
 .firebase-note { margin-top:12px; padding:10px 12px; border-radius:var(--radius); background:var(--gold-pale); color:var(--text-2); font-size:12px; line-height:1.4; }
 
+
+
+/* DRA_THAIS_PUBLIC_POLISH_V6 */
+.sidebar-logo {
+  min-height:112px;
+  padding:16px 14px 12px;
+  justify-content:center;
+  overflow:hidden;
+}
+.brand-logo-full {
+  width:184px;
+  max-width:100%;
+  max-height:78px;
+  object-fit:contain;
+  filter:sepia(1) saturate(1.35) hue-rotate(350deg) brightness(.92) contrast(1.02);
+}
+.firebase-gate {
+  background:
+    radial-gradient(circle at top left, rgba(184,151,58,.14), transparent 34%),
+    linear-gradient(145deg,#fffdf8,#f7f1e6);
+}
+.firebase-card {
+  width:min(430px,94vw);
+  padding:30px;
+  border-color:rgba(184,151,58,.22);
+}
+.firebase-login-logo {
+  width:150px;
+  height:82px;
+  object-fit:contain;
+  display:block;
+  margin:0 auto 12px;
+  filter:sepia(1) saturate(1.35) hue-rotate(350deg) brightness(.92) contrast(1.02);
+}
+.firebase-card h2 {
+  text-align:center;
+  font-size:25px;
+  margin-bottom:4px;
+}
+.firebase-card p {
+  text-align:center;
+  max-width:320px;
+  margin:0 auto 18px;
+}
+.firebase-note { display:none; }
+.lead-tools {
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-bottom:14px;
+}
+.lead-tools .search-box { width:300px; }
+.kcard[draggable="true"] { cursor:grab; }
+.kcard.dragging { opacity:.48; transform:scale(.985); }
+.kcol-body.drag-over { outline:2px dashed var(--gold); outline-offset:3px; background:var(--gold-pale); }
+.lead-save-hint {
+  margin-top:8px;
+  font-size:11px;
+  color:var(--text-3);
+}
+.uploaded-list { margin-top:12px; display:flex; flex-direction:column; gap:6px; }
+.uploaded-file {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 11px; border:1px solid var(--border); background:var(--bg);
+  border-radius:var(--radius); font-size:12px;
+}
+.uploaded-file strong { color:var(--text); }
+.uploaded-file span:first-child {
+  width:24px; height:24px; border-radius:50%; background:var(--gold-pale);
+  color:var(--gold); display:flex; align-items:center; justify-content:center; font-weight:700;
+}
+.view-tab[data-remove-multi="true"] { display:none !important; }
+@media (max-width:760px) {
+  .sidebar-logo { min-height:auto; padding:10px 12px; }
+  .brand-logo-full { width:138px; max-height:52px; }
+  .firebase-card { padding:24px 20px; }
+  .lead-tools .search-box, .lead-tools .filter-select { width:100%; }
+}
+
 </style>
 </head>
 <body>
@@ -1849,6 +1929,380 @@ Object.assign(window,{changeAgendaDayV5,goTodayV5,setAgendaViewV5,toggleMiniCalV
 document.addEventListener('DOMContentLoaded', initV5);
 if (document.readyState !== 'loading') initV5();
 })();
+(function() {
+// DRA_THAIS_PUBLIC_POLISH_V6
+const LEADS_STORAGE_KEY_V6 = 'dra_thais_crm_leads_v6';
+let activeLeadIdV6 = null;
+
+const seedLeadsV6 = [
+  {id:'l1',name:'Thiago Ramos',proc:'Transplante Capilar FUE',tel:'(85) 93333-7001',email:'thiago@email.com',idade:'37 anos',sexo:'Masculino',canal:'Instagram',temp:'Quente',etapa:'Novo contato',valor:'R$ 14-18k',ultimo:'Hoje',obs:'Novo lead via Instagram'},
+  {id:'l2',name:'Patrícia Nunes',proc:'Intradermoterapia',tel:'(85) 92222-0008',email:'patricia@email.com',idade:'41 anos',sexo:'Feminino',canal:'WhatsApp',temp:'Morno',etapa:'Novo contato',valor:'R$ 3-5k',ultimo:'Ontem',obs:'Lead via WhatsApp'},
+  {id:'l3',name:'Lucas Carvalho',proc:'Transplante Capilar FUE',tel:'(85) 91111-0009',email:'lucas@email.com',idade:'39 anos',sexo:'Masculino',canal:'Site',temp:'Frio',etapa:'Novo contato',valor:'R$ 12-16k',ultimo:'3 dias',obs:'Pediu informações iniciais'},
+  {id:'l4',name:'Renata Alves',proc:'Transplante FUE',tel:'(85) 90000-0010',email:'renata@email.com',idade:'34 anos',sexo:'Feminino',canal:'Indicação',temp:'Quente',etapa:'Pré-avaliação',valor:'R$ 14-18k',ultimo:'Amanhã 10h',obs:'Avaliação marcada'},
+  {id:'l5',name:'Eduardo Martins',proc:'FUE + Intradermoterapia',tel:'(85) 90000-0012',email:'eduardo@email.com',idade:'44 anos',sexo:'Masculino',canal:'Instagram',temp:'Morno',etapa:'Pré-avaliação',valor:'R$ 18-22k',ultimo:'30/04 14h',obs:'Avaliação marcada'},
+  {id:'l6',name:'Diego Farias',proc:'Transplante FUE · 3.000 grafts',tel:'(85) 89999-0011',email:'diego@email.com',idade:'38 anos',sexo:'Masculino',canal:'Site',temp:'Quente',etapa:'Orçamento enviado',valor:'R$ 18.000',ultimo:'10/04',obs:'Aguardando retorno'},
+  {id:'l7',name:'Isabela Torres',proc:'Protocolo completo',tel:'(85) 89999-0044',email:'isabela@email.com',idade:'33 anos',sexo:'Feminino',canal:'Instagram',temp:'Morno',etapa:'Orçamento enviado',valor:'R$ 8.500',ultimo:'08/04',obs:'Proposta enviada'},
+  {id:'l8',name:'Bruno Castelo',proc:'Transplante FUE',tel:'(85) 88888-0022',email:'bruno@email.com',idade:'42 anos',sexo:'Masculino',canal:'WhatsApp',temp:'Morno',etapa:'Negociação',valor:'R$ 16.000',ultimo:'26/04',obs:'Negociando condições'},
+  {id:'l9',name:'Vanderley de Moraes Felix',proc:'FUE · 2.200 grafts',tel:'(85) 99996-4780',email:'Vanderleyfelix10@gmail.com',idade:'30 anos',sexo:'Masculino',canal:'Instagram',temp:'Quente',etapa:'Fechado',valor:'R$ 14.800',ultimo:'28/04',obs:'Cirurgia agendada'},
+  {id:'l10',name:'Carlos Henrique',proc:'Transplante FUE',tel:'(85) 87777-0033',email:'carlos@email.com',idade:'45 anos',sexo:'Masculino',canal:'Google',temp:'Frio',etapa:'Perdido',valor:'',ultimo:'15/04',obs:'Sem orçamento no momento'},
+  {id:'l11',name:'Sofia Mendes',proc:'Ledterapia',tel:'(85) 86666-0034',email:'sofia@email.com',idade:'28 anos',sexo:'Feminino',canal:'Instagram',temp:'Frio',etapa:'Perdido',valor:'',ultimo:'12/04',obs:'Cotação'}
+];
+
+const leadStagesV6 = ['Novo contato','Pré-avaliação','Orçamento enviado','Negociação','Fechado','Perdido'];
+const leadStageClassV6 = {
+  'Novo contato':'b-novo',
+  'Pré-avaliação':'b-pre',
+  'Orçamento enviado':'b-orc',
+  'Negociação':'b-neg',
+  'Fechado':'b-fechado',
+  'Perdido':'b-perdido'
+};
+let leadFiltersV6 = { q:'', etapa:'Todos os status', temp:'Temperatura', canal:'Canal' };
+
+function escV6(v) {
+  return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function normV6(v) {
+  return String(v || '').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase();
+}
+function initialsV6(name) {
+  return String(name || '').split(' ').filter(Boolean).slice(0,2).map(w => w[0]).join('').toUpperCase();
+}
+function tempClassV6(temp) {
+  return temp === 'Quente' ? 'b-quente' : temp === 'Morno' ? 'b-morno' : 'b-frio';
+}
+function loadLeadsV6() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(LEADS_STORAGE_KEY_V6) || 'null');
+    if (Array.isArray(saved) && saved.length) return saved;
+  } catch (_) {}
+  return JSON.parse(JSON.stringify(seedLeadsV6));
+}
+let leadsV6 = loadLeadsV6();
+function saveLeadsV6() {
+  localStorage.setItem(LEADS_STORAGE_KEY_V6, JSON.stringify(leadsV6));
+}
+async function syncLeadToFirestoreV6(lead) {
+  try {
+    if (window.firebaseCRM?.auth?.currentUser && window.firebaseCRM.saveClinicDoc) {
+      await window.firebaseCRM.saveClinicDoc('leads', lead.id, {
+        ...lead,
+        syncedFrom: 'github-pages'
+      });
+    }
+  } catch (error) {
+    console.warn('Lead salvo localmente, mas não sincronizou no Firestore:', error);
+  }
+}
+function filteredLeadsV6() {
+  return leadsV6.filter(lead => {
+    const haystack = normV6([lead.name,lead.tel,lead.email,lead.proc,lead.canal,lead.temp,lead.etapa,lead.valor,lead.obs].join(' '));
+    const q = normV6(leadFiltersV6.q);
+    return (!q || haystack.includes(q)) &&
+      (leadFiltersV6.etapa === 'Todos os status' || lead.etapa === leadFiltersV6.etapa) &&
+      (leadFiltersV6.temp === 'Temperatura' || lead.temp === leadFiltersV6.temp) &&
+      (leadFiltersV6.canal === 'Canal' || lead.canal === leadFiltersV6.canal);
+  });
+}
+
+function setupLogoLoginV6() {
+  const logoSrc = document.querySelector('.brand-logo-full')?.getAttribute('src') || '';
+  const card = document.querySelector('.firebase-card');
+  if (card && logoSrc && !card.querySelector('.firebase-login-logo')) {
+    card.insertAdjacentHTML('afterbegin', `<img class="firebase-login-logo" src="${logoSrc}" alt="Instituto Dra. Thais Machado">`);
+  }
+  const p = card?.querySelector('p');
+  if (p) p.textContent = 'Acesse com seu e-mail e senha para entrar no sistema.';
+}
+
+function removeMultiDayV6() {
+  document.querySelectorAll('.view-tab').forEach(btn => {
+    const txt = btn.textContent.trim().toLowerCase();
+    if (txt.includes('múlt') || txt.includes('mult')) {
+      btn.dataset.removeMulti = 'true';
+      btn.remove();
+    }
+  });
+}
+
+function renderPipelineV6() {
+  const wrap = document.querySelector('#view-pipeline .kanban-wrap');
+  if (!wrap) return;
+  const visible = filteredLeadsV6();
+  wrap.innerHTML = leadStagesV6.map(stage => {
+    const items = visible.filter(l => l.etapa === stage);
+    return `<div class="kanban-col" data-stage="${escV6(stage)}">
+      <div class="kcol-head"><span class="cname">${escV6(stage)}</span><span class="ccount">${items.length}</span></div>
+      <div class="kcol-body" data-stage="${escV6(stage)}">
+        ${items.map(renderLeadCardV6).join('') || '<div class="empty-state"><p>Nenhum lead</p></div>'}
+      </div>
+    </div>`;
+  }).join('');
+  wireLeadDragV6();
+}
+function renderLeadCardV6(lead) {
+  return `<div class="kcard" draggable="true" data-lead-id="${lead.id}" onclick="openLeadByIdV6('${lead.id}')">
+    <div class="kc-name">${escV6(lead.name)}</div>
+    <div class="kc-proc">${escV6(lead.proc)}</div>
+    <div class="kc-foot"><span class="badge ${tempClassV6(lead.temp)}">${escV6(lead.temp)}</span><span class="kc-date">${escV6(lead.ultimo)}</span></div>
+    <div class="kc-canal">${escV6(lead.canal)} · ${escV6(lead.valor || 'Sem valor')}</div>
+  </div>`;
+}
+function wireLeadDragV6() {
+  document.querySelectorAll('.kcard[draggable="true"]').forEach(card => {
+    card.addEventListener('dragstart', event => {
+      card.classList.add('dragging');
+      event.dataTransfer.setData('text/plain', card.dataset.leadId);
+    });
+    card.addEventListener('dragend', () => card.classList.remove('dragging'));
+  });
+  document.querySelectorAll('#view-pipeline .kcol-body').forEach(zone => {
+    zone.addEventListener('dragover', event => {
+      event.preventDefault();
+      zone.classList.add('drag-over');
+    });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', async event => {
+      event.preventDefault();
+      zone.classList.remove('drag-over');
+      const id = event.dataTransfer.getData('text/plain');
+      const lead = leadsV6.find(l => l.id === id);
+      if (!lead) return;
+      lead.etapa = zone.dataset.stage;
+      lead.ultimo = 'Agora';
+      saveLeadsV6();
+      await syncLeadToFirestoreV6(lead);
+      renderLeadViewsV6();
+    });
+  });
+}
+
+function renderLeadListV6() {
+  const view = document.getElementById('view-leads');
+  if (!view) return;
+  const table = view.querySelector('.leads-table');
+  if (!table) return;
+  const rows = filteredLeadsV6();
+  const filterBar = view.querySelector('.filter-bar');
+  if (filterBar && !filterBar.dataset.v6Ready) {
+    filterBar.dataset.v6Ready = '1';
+    filterBar.innerHTML = `<div class="lead-tools">
+      <div class="search-box"><span style="color:var(--text-4);font-size:14px">🔍</span><input id="lead-search-v6" type="text" placeholder="Buscar lead por nome, telefone, interesse..." value="${escV6(leadFiltersV6.q)}"></div>
+      <select class="filter-select" id="lead-stage-v6"><option>Todos os status</option>${leadStagesV6.map(s=>`<option>${escV6(s)}</option>`).join('')}</select>
+      <select class="filter-select" id="lead-temp-v6"><option>Temperatura</option><option>Quente</option><option>Morno</option><option>Frio</option></select>
+      <select class="filter-select" id="lead-canal-v6"><option>Canal</option><option>Instagram</option><option>WhatsApp</option><option>Site</option><option>Indicação</option><option>Google</option></select>
+      <button class="btn btn-gold btn-sm" onclick="openLeadModal()">＋ Novo lead</button>
+    </div>`;
+    document.getElementById('lead-search-v6').addEventListener('input', e => { leadFiltersV6.q = e.target.value; renderLeadViewsV6(); });
+    document.getElementById('lead-stage-v6').addEventListener('change', e => { leadFiltersV6.etapa = e.target.value; renderLeadViewsV6(); });
+    document.getElementById('lead-temp-v6').addEventListener('change', e => { leadFiltersV6.temp = e.target.value; renderLeadViewsV6(); });
+    document.getElementById('lead-canal-v6').addEventListener('change', e => { leadFiltersV6.canal = e.target.value; renderLeadViewsV6(); });
+  }
+  table.innerHTML = `<div class="lt-head">
+    <div class="lt-head-cell">Lead</div><div class="lt-head-cell">Interesse</div><div class="lt-head-cell">Canal</div><div class="lt-head-cell">Temp.</div><div class="lt-head-cell">Etapa</div><div class="lt-head-cell">Valor est.</div><div class="lt-head-cell">Último contato</div><div class="lt-head-cell">Ações</div>
+  </div>${rows.map(lead => `<div class="lt-row" onclick="openLeadByIdV6('${lead.id}')">
+    <div class="lt-cell"><div class="cell-patient"><div class="av-sm">${initialsV6(lead.name)}</div><div><div style="font-weight:500">${escV6(lead.name)}</div><div style="font-size:11px;color:var(--text-3)">${escV6(lead.tel)}</div></div></div></div>
+    <div class="lt-cell" style="font-size:12px">${escV6(lead.proc)}</div>
+    <div class="lt-cell" style="font-size:12px">${escV6(lead.canal)}</div>
+    <div class="lt-cell"><span class="badge ${tempClassV6(lead.temp)}">${escV6(lead.temp)}</span></div>
+    <div class="lt-cell"><span class="badge ${leadStageClassV6[lead.etapa] || 'b-novo'}">${escV6(lead.etapa)}</span></div>
+    <div class="lt-cell" style="color:var(--gold);font-weight:500">${escV6(lead.valor || '—')}</div>
+    <div class="lt-cell" style="font-size:12px">${escV6(lead.ultimo)}</div>
+    <div class="lt-cell"><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openLeadByIdV6('${lead.id}')">Ver</button></div>
+  </div>`).join('') || '<div class="empty-state"><p>Nenhum lead encontrado.</p></div>'}`;
+}
+function renderLeadViewsV6() {
+  renderPipelineV6();
+  renderLeadListV6();
+}
+
+function openLeadByIdV6(id) {
+  const lead = leadsV6.find(l => l.id === id);
+  if (!lead) return;
+  activeLeadIdV6 = id;
+  if (typeof openLeadDetail === 'function') {
+    openLeadDetail(lead.name, lead.proc, lead.tel, lead.email, lead.idade, lead.sexo, lead.canal, lead.temp, lead.etapa, lead.valor || '—', lead.ultimo);
+  }
+  const obs = document.getElementById('lp-obs');
+  if (obs) obs.value = lead.obs || '';
+  const btn = document.querySelector('#lead-panel .dp-body > div:last-child .btn-gold');
+  if (btn) {
+    btn.textContent = 'Salvar alterações';
+    btn.onclick = saveLeadPanelV6;
+  }
+  const body = document.querySelector('#lead-panel .dp-body');
+  if (body && !document.getElementById('lead-save-hint-v6')) {
+    body.insertAdjacentHTML('beforeend', '<div class="lead-save-hint" id="lead-save-hint-v6">Alterações salvas no navegador e sincronizadas com Firestore quando houver login.</div>');
+  }
+}
+async function saveLeadPanelV6() {
+  const lead = leadsV6.find(l => l.id === activeLeadIdV6);
+  if (!lead) return;
+  lead.valor = document.getElementById('lp-valor')?.value || '';
+  lead.obs = document.getElementById('lp-obs')?.value || '';
+  const activeStage = document.querySelector('#lp-funnel .funnel-opt.active')?.textContent.trim() || lead.etapa;
+  lead.etapa = activeStage.replace(' (cirurgia agendada)', '');
+  lead.ultimo = 'Agora';
+  saveLeadsV6();
+  await syncLeadToFirestoreV6(lead);
+  renderLeadViewsV6();
+  openLeadByIdV6(lead.id);
+}
+const oldSelectFunnelV6 = window.selectFunnel;
+window.selectFunnel = function(el) {
+  if (typeof oldSelectFunnelV6 === 'function') oldSelectFunnelV6(el);
+  const lead = leadsV6.find(l => l.id === activeLeadIdV6);
+  if (lead) {
+    lead.etapa = el.textContent.trim().replace(' (cirurgia agendada)', '');
+    lead.ultimo = 'Agora';
+    saveLeadsV6();
+    syncLeadToFirestoreV6(lead);
+    renderLeadViewsV6();
+  }
+};
+
+function setupGlobalSearchV6() {
+  const input = document.querySelector('.topbar .search-box input');
+  if (!input || input.dataset.v6Ready) return;
+  input.dataset.v6Ready = '1';
+  input.addEventListener('input', e => {
+    leadFiltersV6.q = e.target.value;
+    const active = document.querySelector('.view.active')?.id;
+    if (active === 'view-leads' || active === 'view-pipeline') renderLeadViewsV6();
+    const patientSearch = document.querySelector('#view-prontuarios .search-box input');
+    if (active === 'view-prontuarios' && patientSearch) {
+      patientSearch.value = e.target.value;
+      patientSearch.dispatchEvent(new Event('input', { bubbles:true }));
+    }
+  });
+}
+
+function setupUploadsV6() {
+  document.querySelectorAll('.upload-zone').forEach((zone, idx) => {
+    if (zone.dataset.v6Ready) return;
+    zone.dataset.v6Ready = '1';
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.hidden = true;
+    input.accept = idx === 1 ? 'video/*' : idx === 2 ? '.pdf,.doc,.docx,image/*' : 'image/*';
+    zone.after(input);
+    let list = zone.parentElement.querySelector('.uploaded-list');
+    if (!list) {
+      list = document.createElement('div');
+      list.className = 'uploaded-list';
+      input.after(list);
+    }
+    zone.addEventListener('click', () => input.click());
+    input.addEventListener('change', () => renderUploadedV6(list, input.files));
+  });
+}
+function renderUploadedV6(list, files) {
+  Array.from(files || []).forEach(file => {
+    const row = document.createElement('div');
+    row.className = 'uploaded-file';
+    row.innerHTML = `<span>✓</span><div style="flex:1"><strong>${escV6(file.name)}</strong><div style="color:var(--text-3);font-size:11px">${(file.size / 1024 / 1024).toFixed(2)} MB · anexado nesta sessão</div></div>`;
+    list.prepend(row);
+  });
+}
+
+function cleanAtestadoTextV6(text) {
+  return String(text || '')
+    .replace(/\\{cid1\\}/g, '')
+    .replace(/\\{cid2\\}/g, '')
+    .replace(/\\\\n/g, '\\n')
+    .replace(/CID-10:\\s*\\./g, 'CID-10:')
+    .trim();
+}
+const oldApplyAtestadoV6 = window.applyAtestadoTemplateV5;
+window.applyAtestadoTemplateV5 = function() {
+  if (typeof oldApplyAtestadoV6 === 'function') oldApplyAtestadoV6();
+  const field = document.getElementById('att-text-v5');
+  if (field) field.value = cleanAtestadoTextV6(field.value);
+};
+function fixExistingAtestadoV6() {
+  const field = document.getElementById('att-text-v5');
+  if (field) field.value = cleanAtestadoTextV6(field.value);
+}
+
+function patchCareTemplateSaveV6() {
+  window.saveCareTemplateV5 = function() {
+    const title = document.getElementById('sheet-title-v5')?.textContent || 'Modelo';
+    const textareas = Array.from(document.querySelectorAll('#sheet-body-v5 textarea')).map(t => ({ id:t.id, value:t.value }));
+    const key = 'dra_thais_care_templates_v6';
+    const templates = JSON.parse(localStorage.getItem(key) || '[]');
+    templates.push({ title, textareas, savedAt:new Date().toISOString() });
+    localStorage.setItem(key, JSON.stringify(templates));
+    alert('Modelo salvo neste navegador.');
+  };
+}
+
+function initPublicPolishV6() {
+  setupLogoLoginV6();
+  removeMultiDayV6();
+  renderLeadViewsV6();
+  setupGlobalSearchV6();
+  setupUploadsV6();
+  patchCareTemplateSaveV6();
+  fixExistingAtestadoV6();
+}
+
+function applyFirestoreLeadsV6(remoteLeads) {
+  if (!Array.isArray(remoteLeads) || !remoteLeads.length) return;
+  leadsV6 = remoteLeads.map((lead, index) => ({
+    id: lead.id || ('remote-' + index),
+    name: lead.name || '',
+    proc: lead.proc || '',
+    tel: lead.tel || '',
+    email: lead.email || '',
+    idade: lead.idade || '',
+    sexo: lead.sexo || '',
+    canal: lead.canal || '',
+    temp: lead.temp || 'Morno',
+    etapa: lead.etapa || 'Novo contato',
+    valor: lead.valor || '',
+    ultimo: lead.ultimo || '',
+    obs: lead.obs || ''
+  }));
+  saveLeadsV6();
+  renderLeadViewsV6();
+}
+
+function removeMultiDaySoonV6() {
+  removeMultiDayV6();
+  setTimeout(removeMultiDayV6, 50);
+  setTimeout(removeMultiDayV6, 250);
+}
+
+['setAgendaViewV5','changeAgendaDayV5','goTodayV5','selectMiniCalDateV5','miniCalMonthV5','selectMonthDayV5'].forEach(fnName => {
+  const original = window[fnName];
+  if (typeof original === 'function' && !original.v6Wrapped) {
+    const wrapped = function(...args) {
+      const result = original.apply(this, args);
+      removeMultiDaySoonV6();
+      return result;
+    };
+    wrapped.v6Wrapped = true;
+    window[fnName] = wrapped;
+  }
+});
+
+const observerV6 = new MutationObserver(removeMultiDayV6);
+observerV6.observe(document.body, { childList:true, subtree:true });
+
+// DRA_THAIS_PUBLIC_POLISH_V6B
+Object.assign(window, { openLeadByIdV6, saveLeadPanelV6, renderLeadViewsV6, applyFirestoreLeadsV6 });
+document.addEventListener('DOMContentLoaded', initPublicPolishV6);
+if (document.readyState !== 'loading') initPublicPolishV6();
+
+const oldRenderAgendaV6 = window.renderAgendaV5;
+if (typeof oldRenderAgendaV6 === 'function') {
+  window.renderAgendaV5 = function() {
+    oldRenderAgendaV6();
+    removeMultiDayV6();
+  };
+}
+})();
 </script>
 
 
@@ -2031,5 +2485,60 @@ window.firebaseCRM = {
 };
 </script>
 
+
+<script type="module">
+// DRA_THAIS_FIRESTORE_LEADS_SYNC_V6
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import {
+  collection,
+  onSnapshot,
+  getDocs,
+  writeBatch,
+  doc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+function waitFirebaseCRM() {
+  return new Promise(resolve => {
+    const tick = () => window.firebaseCRM ? resolve(window.firebaseCRM) : setTimeout(tick, 120);
+    tick();
+  });
+}
+
+const crm = await waitFirebaseCRM();
+let unsubLeads = null;
+
+async function seedLeadsIfEmpty() {
+  const leadsRef = collection(crm.db, "clinics", crm.clinicId, "leads");
+  const snap = await getDocs(leadsRef);
+  if (!snap.empty) return;
+  const local = JSON.parse(localStorage.getItem("dra_thais_crm_leads_v6") || "[]");
+  if (!local.length) return;
+  const batch = writeBatch(crm.db);
+  local.forEach(lead => {
+    batch.set(doc(crm.db, "clinics", crm.clinicId, "leads", lead.id), {
+      ...lead,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      seededFrom: "github-pages"
+    }, { merge: true });
+  });
+  await batch.commit();
+}
+
+onAuthStateChanged(crm.auth, async user => {
+  if (unsubLeads) {
+    unsubLeads();
+    unsubLeads = null;
+  }
+  if (!user) return;
+  await seedLeadsIfEmpty();
+  const leadsRef = collection(crm.db, "clinics", crm.clinicId, "leads");
+  unsubLeads = onSnapshot(leadsRef, snapshot => {
+    const leads = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (leads.length && window.applyFirestoreLeadsV6) window.applyFirestoreLeadsV6(leads);
+  }, error => console.warn("Não foi possível ouvir leads do Firestore:", error));
+});
+</script>
 </body>
 </html>
