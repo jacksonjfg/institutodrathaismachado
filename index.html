@@ -789,6 +789,73 @@ body.sidebar-collapsed .sidebar *:not(.sidebar-toggle-v8) { visibility:hidden; }
   .sheet-grid-2,.sheet-grid-3,.sheet-grid-4 { grid-template-columns:1fr !important; }
 }
 
+
+/* DRA_THAIS_LEAD_UX_V10 */
+.lead-pager-v10,.pipeline-tools-v10 {
+  display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  padding:12px 0; color:var(--text-2); font-size:12px;
+}
+.lead-pager-v10 .pager-actions,.pipeline-tools-v10 .pipeline-tools-group { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.lead-pager-v10 button,.lead-pager-v10 select,.pipeline-tools-v10 select,.pipeline-tools-v10 input {
+  border:1px solid var(--border-2); background:#fff; color:var(--text); border-radius:8px;
+  padding:7px 10px; font-family:'DM Sans',sans-serif; font-size:12px; outline:none;
+}
+.lead-pager-v10 button { cursor:pointer; }
+.lead-pager-v10 button:disabled { opacity:.45; cursor:not-allowed; }
+.pipeline-tools-v10 input { width:260px; max-width:100%; }
+.pipeline-more-v10 { padding:10px; font-size:12px; color:var(--text-3); text-align:center; }
+.lead-convert-row-v10 { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
+.lead-convert-row-v10 .btn { justify-content:center; }
+.agenda-commercial-v10 {
+  background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg);
+  box-shadow:var(--shadow); margin-bottom:14px; overflow:hidden;
+}
+.agenda-commercial-v10 h3 { font-size:14px; padding:12px 16px; border-bottom:1px solid var(--border); }
+.agenda-commercial-v10 .ag-row { cursor:default; }
+@media (max-width:700px){
+  .pipeline-tools-v10,.lead-pager-v10 { align-items:stretch; }
+  .pipeline-tools-v10 .pipeline-tools-group,.lead-pager-v10 .pager-actions { width:100%; }
+  .pipeline-tools-v10 input,.pipeline-tools-v10 select,.lead-pager-v10 select,.lead-pager-v10 button { flex:1; min-width:0; }
+  .lead-convert-row-v10 { grid-template-columns:1fr; }
+}
+
+
+/* DRA_THAIS_DELIVERY_READY_V11 */
+.dashboard-real-grid-v11 { display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:14px; }
+.dash-updated-v11 { color:var(--text-3); font-size:12px; font-weight:400; }
+.real-bars-v11 { display:flex; align-items:end; gap:10px; min-height:180px; padding:12px 4px 2px; }
+.real-bar-v11 { flex:1; min-width:44px; display:flex; flex-direction:column; align-items:center; justify-content:end; gap:7px; }
+.real-bar-fill-v11 { width:100%; min-height:8px; border:1px solid var(--gold-border); background:linear-gradient(180deg,var(--gold-pale),rgba(188,154,55,.18)); border-radius:6px 6px 0 0; display:flex; align-items:flex-start; justify-content:center; color:var(--gold-dark); font-size:11px; padding-top:5px; }
+.real-bar-label-v11 { font-size:11px; color:var(--text-3); }
+.dash-table-v11 { overflow-x:auto; }
+.dash-table-v11 .ag-head,.dash-table-v11 .ag-row { min-width:760px; grid-template-columns:90px 1.2fr 120px 180px 1fr 90px !important; }
+.funnel-real-v11 { display:flex; flex-direction:column; gap:10px; }
+.funnel-item-v11 { display:grid; grid-template-columns:104px 1fr 46px; align-items:center; gap:8px; font-size:12px; }
+.funnel-track-v11 { height:26px; background:var(--bg); border:1px solid var(--border); border-radius:999px; overflow:hidden; }
+.funnel-fill-v11 { height:100%; min-width:26px; display:flex; align-items:center; justify-content:flex-end; padding-right:8px; border-radius:999px; color:#fff; font-size:11px; font-weight:600; }
+.dashboard-actions-v11 { display:grid; grid-template-columns:1fr; gap:8px; margin-top:14px; }
+.dashboard-actions-v11 .btn { justify-content:center; }
+.schedule-modal-v11 { position:fixed; inset:0; z-index:12000; background:rgba(28,24,18,.38); display:none; align-items:center; justify-content:center; padding:18px; }
+.schedule-modal-v11.open { display:flex; }
+.schedule-card-v11 { width:min(560px,100%); background:#fff; border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow-lg); overflow:hidden; }
+.schedule-card-v11 header { padding:18px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.schedule-card-v11 h3 { font-family:'Playfair Display',serif; font-size:24px; font-weight:500; }
+.schedule-body-v11 { padding:18px 20px; display:grid; gap:12px; }
+.schedule-grid-v11 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.schedule-field-v11 label { display:block; font-size:12px; color:var(--text-2); margin-bottom:6px; font-weight:600; }
+.schedule-field-v11 input,.schedule-field-v11 select,.schedule-field-v11 textarea { width:100%; border:1px solid var(--border-2); border-radius:8px; padding:10px 12px; font-family:'DM Sans',sans-serif; background:var(--bg); outline:none; }
+.schedule-field-v11 textarea { min-height:78px; resize:vertical; }
+.schedule-actions-v11 { padding:14px 20px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:8px; }
+.client-ready-fix-v11 .nav-badge[data-real-count] { min-width:24px; text-align:center; }
+@media (max-width:900px){ .dashboard-real-grid-v11 { grid-template-columns:1fr; } }
+@media (max-width:700px){
+  .real-bars-v11 { overflow-x:auto; align-items:end; }
+  .real-bar-v11 { min-width:58px; }
+  .schedule-grid-v11 { grid-template-columns:1fr; }
+  .schedule-actions-v11 { flex-direction:column; }
+  .schedule-actions-v11 .btn { justify-content:center; }
+}
+
 </style>
 </head>
 <body>
@@ -3700,6 +3767,641 @@ onAuthStateChanged(crm.auth, async user => {
 </script>
 
 
+
+
+<script>
+/* DRA_THAIS_LEAD_UX_V10 */
+(function(){
+  'use strict';
+  const KEY = 'dra_thais_crm_leads_v8';
+  const APPT_KEY = 'dra_thais_crm_commercial_appointments_v10';
+  const STAGES = ['Novo contato','Pré-avaliação','Orçamento enviado','Negociação','Fechado','Perdido'];
+  const CHANNELS = ['Instagram','WhatsApp','Site','Indicação','Google','Manual','Moskit','Moskit Boost','MOSKIT_API_V2'];
+  const state = { page:1, size:20, q:'', etapa:'Todos os status', temp:'Temperatura', canal:'Canal', pipeQ:'', pipeDays:'90', pipeLimit:20, activeLeadId:null };
+
+  function esc(v){ return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function norm(v){ return String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
+  function digits(v){ return String(v || '').replace(/\D/g,''); }
+  function initials(name){ return String(name||'').split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase() || 'LD'; }
+  function normalizeStage(stage){
+    const s = norm(stage).replace(/\s+/g,' ').trim();
+    if(s.startsWith('pre')) return 'Pré-avaliação';
+    if(s.startsWith('orc')) return 'Orçamento enviado';
+    if(s.startsWith('neg')) return 'Negociação';
+    if(s.startsWith('fechado')) return 'Fechado';
+    if(s.startsWith('perdido')) return 'Perdido';
+    return 'Novo contato';
+  }
+  function loadLeads(){
+    try { return JSON.parse(localStorage.getItem(KEY) || '[]').filter(l => l && l.name); }
+    catch(e){ return window.__draThaisLeadsV8 || []; }
+  }
+  function saveLeads(leads){
+    localStorage.setItem(KEY, JSON.stringify(leads));
+    window.__draThaisLeadsV8 = leads;
+  }
+  function parseDate(v){
+    const s = String(v || '');
+    let m = s.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    if(m) return new Date(+m[3], +m[2]-1, +m[1]);
+    m = s.match(/(\d{4})-(\d{2})-(\d{2})/);
+    if(m) return new Date(+m[1], +m[2]-1, +m[3]);
+    return null;
+  }
+  function dayLimitPredicate(l){
+    if(state.pipeDays === 'all') return true;
+    const d = parseDate(l.ultimo) || parseDate(l.createdAtMoskit);
+    if(!d) return false;
+    const now = new Date();
+    const diff = (now - d) / 86400000;
+    return diff <= Number(state.pipeDays);
+  }
+  function leadMatches(l, source){
+    const q = norm(source === 'pipeline' ? state.pipeQ : state.q);
+    const hay = norm([l.name,l.tel,l.email,l.cpf,l.proc,l.canal,l.temp,l.etapa,l.valor,l.obs,l.moskitId].join(' '));
+    if(q && !hay.includes(q)) return false;
+    if(source !== 'pipeline') {
+      if(state.etapa !== 'Todos os status' && l.etapa !== state.etapa) return false;
+      if(state.temp !== 'Temperatura' && l.temp !== state.temp) return false;
+      if(state.canal !== 'Canal' && l.canal !== state.canal) return false;
+    }
+    if(source === 'pipeline' && !dayLimitPredicate(l)) return false;
+    return true;
+  }
+  function tempClass(t){ return t === 'Quente' ? 'b-quente' : (t === 'Frio' ? 'b-frio' : 'b-morno'); }
+  function stageClass(s){ return 'b-' + norm(s).replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,''); }
+  function whatsappUrl(tel){ const n = digits(tel); return n ? 'https://wa.me/' + (n.length <= 11 ? '55' + n : n) : ''; }
+
+  function ensurePipelineTools(){
+    const view = document.getElementById('view-pipeline');
+    const wrap = view?.querySelector('.kanban-wrap');
+    if(!view || !wrap || view.querySelector('.pipeline-tools-v10')) return;
+    wrap.insertAdjacentHTML('beforebegin',
+      '<div class="pipeline-tools-v10">'+
+        '<div class="pipeline-tools-group">'+
+          '<input id="pipe-q-v10" placeholder="Buscar no pipeline...">'+
+          '<select id="pipe-days-v10"><option value="30">Últimos 30 dias</option><option value="90" selected>Últimos 90 dias</option><option value="180">Últimos 180 dias</option><option value="365">Últimos 12 meses</option><option value="all">Todos</option></select>'+
+          '<select id="pipe-limit-v10"><option value="10">10 por status</option><option value="20" selected>20 por status</option><option value="50">50 por status</option></select>'+
+        '</div>'+
+        '<span id="pipe-summary-v10"></span>'+
+      '</div>');
+    view.querySelector('#pipe-q-v10').addEventListener('input', e => { state.pipeQ = e.target.value; renderPipeline(); });
+    view.querySelector('#pipe-days-v10').addEventListener('change', e => { state.pipeDays = e.target.value; renderPipeline(); });
+    view.querySelector('#pipe-limit-v10').addEventListener('change', e => { state.pipeLimit = Number(e.target.value); renderPipeline(); });
+  }
+  function card(l){
+    return '<div class="kcard" draggable="true" data-lead-id="'+esc(l.id)+'" onclick="openLeadV10(\''+esc(l.id)+'\')">'+
+      '<div class="kc-name">'+esc(l.name)+'</div><div class="kc-proc">'+esc(l.proc || 'Contato comercial')+'</div>'+
+      '<div class="kc-foot"><span class="badge '+tempClass(l.temp)+'">'+esc(l.temp || 'Morno')+'</span><span class="kc-date">'+esc(l.ultimo || 'Moskit')+'</span></div>'+
+      '<div class="kc-canal">'+esc(l.canal || 'Manual')+' · '+esc(l.valor || 'Sem valor')+'</div></div>';
+  }
+  function renderPipeline(){
+    ensurePipelineTools();
+    const wrap = document.querySelector('#view-pipeline .kanban-wrap');
+    if(!wrap) return;
+    const leads = loadLeads().filter(l => leadMatches(l, 'pipeline'));
+    document.getElementById('pipe-summary-v10')?.replaceChildren(document.createTextNode(leads.length + ' leads no filtro'));
+    wrap.innerHTML = STAGES.map(stage => {
+      const items = leads.filter(l => normalizeStage(l.etapa) === stage);
+      const shown = items.slice(0, state.pipeLimit);
+      return '<div class="kanban-col" data-stage="'+esc(stage)+'"><div class="kc-head"><span>'+esc(stage)+'</span><span class="kc-count">'+items.length+'</span></div>'+
+        (shown.map(card).join('') || '<div class="empty-state" style="padding:16px"><p>Nenhum lead.</p></div>')+
+        (items.length > shown.length ? '<div class="pipeline-more-v10">+'+(items.length-shown.length)+' ocultos. Refine busca/data.</div>' : '')+
+      '</div>';
+    }).join('');
+    wrap.querySelectorAll('.kcard').forEach(el => el.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', el.dataset.leadId)));
+    wrap.querySelectorAll('.kanban-col').forEach(col => {
+      col.addEventListener('dragover', e => { e.preventDefault(); col.classList.add('drag-over'); });
+      col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
+      col.addEventListener('drop', async e => {
+        e.preventDefault(); col.classList.remove('drag-over');
+        const leads = loadLeads();
+        const lead = leads.find(l => l.id === e.dataTransfer.getData('text/plain'));
+        if(!lead) return;
+        lead.etapa = normalizeStage(col.dataset.stage);
+        lead.ultimo = 'Agora';
+        saveLeads(leads);
+        await syncLead(lead);
+        renderPipeline();
+        renderLeadRows();
+        openLead(lead.id);
+      });
+    });
+  }
+
+  function ensureLeadFilters(){
+    const bar = document.querySelector('#view-leads .filter-bar');
+    if(!bar || bar.dataset.v10 === '1') return;
+    bar.dataset.v10 = '1';
+    bar.innerHTML = '<div class="search-box"><span style="color:var(--text-4);font-size:14px">🔍</span><input id="lead-q-v10" type="text" placeholder="Buscar por nome, telefone, CPF, e-mail..." autocomplete="off"></div>'+
+      '<select class="filter-select" id="lead-stage-v10"><option>Todos os status</option>'+STAGES.map(s=>'<option>'+esc(s)+'</option>').join('')+'</select>'+
+      '<select class="filter-select" id="lead-temp-v10"><option>Temperatura</option><option>Quente</option><option>Morno</option><option>Frio</option></select>'+
+      '<select class="filter-select" id="lead-canal-v10"><option>Canal</option>'+CHANNELS.map(s=>'<option>'+esc(s)+'</option>').join('')+'</select>'+
+      '<button class="btn btn-gold btn-sm" onclick="openLeadModal()">＋ Novo lead</button>';
+    bar.querySelector('#lead-q-v10').addEventListener('input', e => { state.q = e.target.value; state.page = 1; renderLeadRows(); });
+    bar.querySelector('#lead-stage-v10').addEventListener('change', e => { state.etapa = e.target.value; state.page = 1; renderLeadRows(); });
+    bar.querySelector('#lead-temp-v10').addEventListener('change', e => { state.temp = e.target.value; state.page = 1; renderLeadRows(); });
+    bar.querySelector('#lead-canal-v10').addEventListener('change', e => { state.canal = e.target.value; state.page = 1; renderLeadRows(); });
+  }
+  function renderLeadRows(){
+    ensureLeadFilters();
+    const table = document.querySelector('#view-leads .leads-table');
+    if(!table) return;
+    const all = loadLeads().filter(l => leadMatches(l, 'list'));
+    const pages = Math.max(1, Math.ceil(all.length / state.size));
+    state.page = Math.min(Math.max(1, state.page), pages);
+    const start = (state.page - 1) * state.size;
+    const rows = all.slice(start, start + state.size);
+    table.innerHTML = '<div class="lt-head"><div>Lead</div><div>Procedimento</div><div>Canal</div><div>Temp.</div><div>Status</div><div>Valor</div><div></div></div>'+
+      (rows.map(l => '<div class="lt-row" onclick="openLeadV10(\''+esc(l.id)+'\')">'+
+        '<div class="lt-cell"><div class="cell-patient"><div class="av-sm">'+initials(l.name)+'</div><div><div style="font-weight:500">'+esc(l.name)+'</div><div style="font-size:11px;color:var(--text-3)">'+esc(l.tel || l.email || l.cpf || 'Sem contato')+'</div></div></div></div>'+
+        '<div class="lt-cell" style="font-size:12px">'+esc(l.proc || 'Contato comercial')+'</div><div class="lt-cell" style="font-size:12px">'+esc(l.canal || 'Manual')+'</div>'+
+        '<div class="lt-cell"><span class="badge '+tempClass(l.temp)+'">'+esc(l.temp || 'Morno')+'</span></div><div class="lt-cell"><span class="badge '+stageClass(l.etapa)+'">'+esc(l.etapa)+'</span></div>'+
+        '<div class="lt-cell" style="font-size:12px">'+esc(l.valor || '—')+'</div><div class="lt-cell"><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openLeadV10(\''+esc(l.id)+'\')">Ver</button></div></div>').join('') ||
+        '<div class="empty-state"><p>Nenhum lead encontrado.</p></div>')+
+      '<div class="lead-pager-v10"><span>Mostrando '+(all.length ? start+1 : 0)+'-'+Math.min(start+state.size, all.length)+' de '+all.length+' leads</span>'+
+        '<div class="pager-actions"><select id="lead-size-v10"><option '+(state.size===15?'selected':'')+'>15</option><option '+(state.size===20?'selected':'')+'>20</option><option '+(state.size===50?'selected':'')+'>50</option></select>'+
+        '<button id="lead-prev-v10" '+(state.page<=1?'disabled':'')+'>Anterior</button><span>Página '+state.page+' de '+pages+'</span><button id="lead-next-v10" '+(state.page>=pages?'disabled':'')+'>Próxima</button></div></div>';
+    table.querySelector('#lead-size-v10').addEventListener('change', e => { state.size = Number(e.target.value); state.page = 1; renderLeadRows(); });
+    table.querySelector('#lead-prev-v10').addEventListener('click', () => { state.page--; renderLeadRows(); });
+    table.querySelector('#lead-next-v10').addEventListener('click', () => { state.page++; renderLeadRows(); });
+  }
+
+  async function syncLead(lead){
+    try {
+      if(window.firebaseCRM?.auth?.currentUser && window.firebaseCRM.saveClinicDoc) {
+        await window.firebaseCRM.saveClinicDoc('leads', lead.id, Object.assign({}, lead, {updatedAt:new Date().toISOString()}));
+      }
+    } catch(err) { console.warn('Lead salvo localmente, mas não sincronizou no Firestore:', err); }
+  }
+  function patchLeadModal(){
+    const leadRoot = document.getElementById('m-lead');
+    if(leadRoot) {
+      const selects = leadRoot.querySelectorAll('select');
+      if(selects[1]) selects[1].innerHTML = CHANNELS.map(c => '<option>'+esc(c)+'</option>').join('');
+      if(selects[2]) selects[2].innerHTML = '<option>Quente</option><option selected>Morno</option><option>Frio</option>';
+      if(selects[3]) selects[3].innerHTML = STAGES.map(s => '<option>'+esc(s)+'</option>').join('');
+    }
+    const save = document.querySelector('#modal-main .modal-foot .btn-gold');
+    if(!save || save.dataset.v10 === '1') return;
+    save.dataset.v10 = '1';
+    save.addEventListener('click', async e => {
+      const activeLeadTab = document.getElementById('m-lead')?.classList.contains('active');
+      if(!activeLeadTab) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const inputs = Array.from(document.querySelectorAll('#m-lead input,#m-lead select,#m-lead textarea'));
+      const lead = {
+        id:'lead-'+Date.now(),
+        name:inputs[0]?.value?.trim() || '',
+        tel:inputs[1]?.value?.trim() || '',
+        cpf:inputs[2]?.value?.trim() || '',
+        idade:inputs[3]?.value?.trim() || '',
+        email:inputs[4]?.value?.trim() || '',
+        sexo:inputs[5]?.value || '',
+        canal:inputs[6]?.value || 'Manual',
+        temp:inputs[7]?.value || 'Morno',
+        etapa:normalizeStage(inputs[8]?.value || 'Novo contato'),
+        proc:inputs[9]?.value || 'A definir',
+        valor:inputs[10]?.value?.trim() || '',
+        obs:inputs[11]?.value?.trim() || '',
+        ultimo:'Agora'
+      };
+      if(!lead.name || !(lead.tel || lead.email || lead.cpf)) return alert('Preencha nome e pelo menos telefone, e-mail ou CPF do lead.');
+      const leads = loadLeads();
+      leads.unshift(lead);
+      saveLeads(leads);
+      await syncLead(lead);
+      if(typeof closeModal === 'function') closeModal();
+      state.page = 1;
+      renderPipeline();
+      renderLeadRows();
+      openLead(lead.id);
+    }, true);
+  }
+  window.openLeadModal = function(){
+    document.getElementById('modal-main')?.classList.add('open');
+    if(typeof switchMTab === 'function') switchMTab(document.querySelectorAll('.mtab')[1], 'm-lead');
+    patchLeadModal();
+  };
+
+  function openLead(id){
+    const lead = loadLeads().find(l => l.id === id);
+    if(!lead) return;
+    state.activeLeadId = id;
+    if(typeof window.openLeadDetail === 'function') window.openLeadDetail(lead.name, lead.proc || 'Contato comercial', lead.tel || 'Sem telefone', lead.email || '', lead.idade || '', lead.sexo || '', lead.canal || 'Manual', lead.temp || 'Morno', lead.etapa, lead.valor || '—', lead.ultimo || '');
+    const obs = document.getElementById('lp-obs');
+    if(obs) obs.value = lead.obs || '';
+    document.querySelectorAll('#lead-panel .lead-whatsapp-btn, #lead-panel .lead-panel-save-row, #lead-panel .lead-save-hint, #lead-panel .lead-convert-row-v10').forEach(el => el.remove());
+    const telNode = document.getElementById('lp-tel')?.closest('.dp-field');
+    const url = whatsappUrl(lead.tel);
+    if(telNode && url) telNode.insertAdjacentHTML('beforeend','<a class="btn btn-gold btn-sm lead-whatsapp-btn" target="_blank" rel="noopener" href="'+url+'">Abrir WhatsApp</a>');
+    const body = document.querySelector('#lead-panel .detail-body');
+    if(body) body.insertAdjacentHTML('beforeend',
+      '<div class="lead-convert-row-v10"><button class="btn btn-outline" onclick="convertLeadToPatientV10()">Criar prontuário</button><button class="btn btn-gold" onclick="scheduleLeadV10()">Agendar lead</button></div>'+
+      '<div class="lead-panel-save-row"><button class="btn btn-outline" onclick="closeLeadDetail()">Cancelar</button><button class="btn btn-gold" onclick="saveLeadV10()">Salvar alterações</button></div><div class="lead-save-hint">Salva no navegador e no Firestore quando estiver logado.</div>');
+  }
+  async function saveLead(){
+    const leads = loadLeads();
+    const lead = leads.find(l => l.id === state.activeLeadId);
+    if(!lead) return alert('Abra um lead antes de salvar.');
+    lead.valor = document.getElementById('lp-valor')?.value || '';
+    lead.obs = document.getElementById('lp-obs')?.value || '';
+    lead.etapa = normalizeStage(document.getElementById('lp-etapa')?.value || lead.etapa);
+    lead.ultimo = document.getElementById('lp-data')?.value || lead.ultimo || 'Agora';
+    saveLeads(leads);
+    await syncLead(lead);
+    renderPipeline();
+    renderLeadRows();
+    openLead(lead.id);
+  }
+  function activeLead(){
+    return loadLeads().find(l => l.id === state.activeLeadId);
+  }
+  window.convertLeadToPatientV10 = function(){
+    const l = activeLead();
+    if(!l) return alert('Abra um lead primeiro.');
+    if(typeof closeLeadDetail === 'function') closeLeadDetail();
+    if(typeof openPatient === 'function') openPatient(l.name, (l.idade || 'Lead comercial') + (l.sexo ? ' · '+l.sexo : ''), l.tel || '', l.email || '', '—', '—', l.proc || 'Contato comercial', 'Dra. Thais Machado', 'Hoje', '0', '0', 'Particular');
+  };
+  window.scheduleLeadV10 = async function(){
+    const l = activeLead();
+    if(!l) return alert('Abra um lead primeiro.');
+    const date = prompt('Data do agendamento (DD/MM/AAAA):', '');
+    if(!date) return;
+    const time = prompt('Horário de início (ex: 09:00):', '09:00') || '09:00';
+    const proc = prompt('Atendimento/procedimento:', l.proc || 'Avaliação') || (l.proc || 'Avaliação');
+    const appts = loadAppointments();
+    const appt = { id:'ag-'+Date.now(), leadId:l.id, patient:l.name, tel:l.tel || '', email:l.email || '', date, time, proc, status:'Agendado' };
+    appts.unshift(appt);
+    localStorage.setItem(APPT_KEY, JSON.stringify(appts));
+    const leads = loadLeads();
+    const lead = leads.find(x => x.id === l.id);
+    if(lead) { lead.etapa = 'Fechado'; lead.ultimo = date; saveLeads(leads); await syncLead(lead); }
+    renderPipeline();
+    renderLeadRows();
+    renderCommercialAppointments();
+    if(typeof closeLeadDetail === 'function') closeLeadDetail();
+    if(typeof nav === 'function') {
+      const agendaNav = document.querySelector('.nav-item[onclick*="agenda"]');
+      if(agendaNav) nav(agendaNav, 'agenda');
+    }
+    alert('Agendamento criado a partir do lead.');
+  };
+  function loadAppointments(){
+    try { return JSON.parse(localStorage.getItem(APPT_KEY) || '[]'); } catch(e){ return []; }
+  }
+  function renderCommercialAppointments(){
+    const agenda = document.getElementById('view-agenda');
+    const table = agenda?.querySelector('.agenda-table');
+    if(!agenda || !table) return;
+    let panel = agenda.querySelector('.agenda-commercial-v10');
+    const appts = loadAppointments();
+    if(!panel) {
+      table.insertAdjacentHTML('beforebegin','<div class="agenda-commercial-v10"><h3>Agendamentos vindos do comercial</h3><div class="agenda-commercial-body-v10"></div></div>');
+      panel = agenda.querySelector('.agenda-commercial-v10');
+    }
+    const body = panel.querySelector('.agenda-commercial-body-v10');
+    body.innerHTML = appts.length ? appts.slice(0,8).map(a =>
+      '<div class="ag-row"><div class="ag-cell ag-time">'+esc(a.time)+'</div><div class="ag-cell"><div class="cell-patient"><div class="av-sm">'+initials(a.patient)+'</div><div><div class="ag-patient-name">'+esc(a.patient)+'</div><div style="font-size:11px;color:var(--text-3)">'+esc(a.date)+'</div></div></div></div><div class="ag-cell"><span class="badge b-agendado">'+esc(a.status)+'</span></div><div class="ag-cell"><div><div class="ag-proc-type">Comercial</div><div class="ag-proc-name">'+esc(a.proc)+'</div></div></div><div class="ag-cell">'+esc(a.tel)+'</div><div class="ag-cell">—</div></div>'
+    ).join('') : '<div class="empty-state"><p>Nenhum agendamento criado pelo comercial ainda.</p></div>';
+  }
+
+  function boot(){
+    ensureLeadFilters();
+    ensurePipelineTools();
+    patchLeadModal();
+    renderPipeline();
+    renderLeadRows();
+    renderCommercialAppointments();
+  }
+  window.openLeadV10 = openLead;
+  window.saveLeadV10 = saveLead;
+  window.openLeadV9 = openLead;
+  window.saveLeadV9 = saveLead;
+  window.openLeadV8 = openLead;
+  window.saveLeadV8 = saveLead;
+  window.openLeadV7 = openLead;
+  window.saveLeadV7 = saveLead;
+  window.renderLeadViewsV6 = function(){ renderPipeline(); renderLeadRows(); };
+  document.addEventListener('DOMContentLoaded', boot);
+  if(document.readyState !== 'loading') boot();
+})();
+</script>
+
+
+<script>
+/* DRA_THAIS_DELIVERY_READY_V11 */
+(function(){
+  'use strict';
+  const LEADS_KEY = 'dra_thais_crm_leads_v8';
+  const APPT_KEY = 'dra_thais_crm_commercial_appointments_v10';
+  const PATIENTS_KEY = 'dra_thais_crm_patients_v11';
+  const STAGES = ['Novo contato','Pré-avaliação','Orçamento enviado','Negociação','Fechado','Perdido'];
+  const AGENDA_STATUSES = ['Agendado','Confirmado','Paciente no local','Em atendimento','Atendido','Faltou','Desmarcado'];
+  let scheduleLeadId = null;
+
+  function esc(v){ return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function norm(v){ return String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
+  function digits(v){ return String(v || '').replace(/\D/g,''); }
+  function initials(name){ return String(name||'').split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase() || 'TM'; }
+  function todayISO(){ return new Date().toISOString().slice(0,10); }
+  function brToISO(v){
+    const s = String(v || '').trim();
+    let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if(m) return `${m[1]}-${m[2]}-${m[3]}`;
+    m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+    if(m) return `${m[3]}-${m[2]}-${m[1]}`;
+    return '';
+  }
+  function isoToBR(v){
+    const s = brToISO(v);
+    if(!s) return v || '';
+    const [y,m,d] = s.split('-');
+    return `${d}/${m}/${y}`;
+  }
+  function parseISO(v){
+    const iso = brToISO(v);
+    return iso ? new Date(iso + 'T00:00:00') : null;
+  }
+  function moneyEmpty(v){ return v || '—'; }
+  function loadJSON(key, fallback){
+    try { const value = JSON.parse(localStorage.getItem(key) || 'null'); return value ?? fallback; }
+    catch(e){ return fallback; }
+  }
+  function saveJSON(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
+  function loadLeads(){ return loadJSON(LEADS_KEY, window.__draThaisLeadsV8 || []).filter(l => l && l.name); }
+  function saveLeads(leads){ saveJSON(LEADS_KEY, leads); window.__draThaisLeadsV8 = leads; }
+  function loadAppointments(){ return loadJSON(APPT_KEY, []); }
+  function saveAppointments(appts){ saveJSON(APPT_KEY, appts); }
+  function seedPatients(){
+    const existing = loadJSON(PATIENTS_KEY, null);
+    if(existing && existing.length) return existing;
+    const patients = [
+      {id:'pac-teste-m', name:'Vanderley de Moraes Felix', sub:'30 anos · Masculino', tel:'(85) 99996-4780', email:'Vanderleyfelix10@gmail.com', grau:'NW3', grafts:'2.200 grafts', proc:'Transplante Capilar FUE', medico:'Dra. Thais Machado', ultimo:'28/04/2026', agend:'3', cancel:'0', convenio:'Particular'},
+      {id:'pac-teste-f', name:'Angela de Fátima Nascimento', sub:'42 anos · Feminino', tel:'(85) 85993-4128', email:'angela.nascimento80@outlook.com', grau:'Difuso', grafts:'—', proc:'Intradermoterapia', medico:'Dra. Thais Machado', ultimo:'20/04/2026', agend:'5', cancel:'1', convenio:'Particular'}
+    ];
+    saveJSON(PATIENTS_KEY, patients);
+    return patients;
+  }
+  function loadPatients(){ return seedPatients(); }
+  function tempClass(t){ return t === 'Quente' ? 'b-quente' : (t === 'Frio' ? 'b-frio' : 'b-morno'); }
+  function normalizeStage(stage){
+    const s = norm(stage).replace(/\s+/g,' ').trim();
+    if(s.startsWith('pre')) return 'Pré-avaliação';
+    if(s.startsWith('orc')) return 'Orçamento enviado';
+    if(s.startsWith('neg')) return 'Negociação';
+    if(s.startsWith('fechado')) return 'Fechado';
+    if(s.startsWith('perdido')) return 'Perdido';
+    return 'Novo contato';
+  }
+  async function syncDoc(collection, id, data){
+    try {
+      if(window.firebaseCRM?.auth?.currentUser && window.firebaseCRM.saveClinicDoc) {
+        await window.firebaseCRM.saveClinicDoc(collection, id, Object.assign({}, data, {updatedAt:new Date().toISOString()}));
+      }
+    } catch(e) { console.warn(collection + ' salvo localmente, mas não sincronizou no Firestore:', e); }
+  }
+
+  function realMetrics(){
+    const leads = loadLeads();
+    const appts = loadAppointments();
+    const patients = loadPatients();
+    const isoToday = todayISO();
+    const now = new Date();
+    const month = now.getMonth();
+    const year = now.getFullYear();
+    const stageCounts = Object.fromEntries(STAGES.map(s => [s, 0]));
+    leads.forEach(l => { const s = normalizeStage(l.etapa); stageCounts[s] = (stageCounts[s] || 0) + 1; });
+    const openLeads = leads.filter(l => !['Fechado','Perdido'].includes(normalizeStage(l.etapa))).length;
+    const won = stageCounts['Fechado'] || 0;
+    const lost = stageCounts['Perdido'] || 0;
+    const conversion = won + lost ? Math.round((won / (won + lost)) * 100) : 0;
+    const todayAppts = appts.filter(a => brToISO(a.date) === isoToday).length;
+    const monthSurgeries = appts.filter(a => {
+      const d = parseISO(a.date);
+      return d && d.getMonth() === month && d.getFullYear() === year && /cirurgia|transplante|fue/i.test(a.proc || '');
+    }).length;
+    return {leads, appts, patients, stageCounts, openLeads, won, lost, conversion, todayAppts, monthSurgeries};
+  }
+  function monthLabel(offset){
+    const d = new Date();
+    d.setMonth(d.getMonth() + offset);
+    return d.toLocaleDateString('pt-BR', {month:'short'}).replace('.', '');
+  }
+  function procedureMonths(appts){
+    const buckets = [];
+    for(let i=-5;i<=0;i++){
+      const d = new Date();
+      d.setMonth(d.getMonth()+i);
+      buckets.push({key:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`, label:monthLabel(i), count:0});
+    }
+    appts.forEach(a => {
+      const iso = brToISO(a.date);
+      if(!iso) return;
+      const key = iso.slice(0,7);
+      const bucket = buckets.find(b => b.key === key);
+      if(bucket) bucket.count++;
+    });
+    return buckets;
+  }
+  function upcoming(appts){
+    const now = new Date();
+    return appts
+      .map(a => Object.assign({}, a, {d: parseISO(a.date)}))
+      .filter(a => a.d && a.d >= new Date(now.getFullYear(), now.getMonth(), now.getDate()))
+      .sort((a,b) => (a.d - b.d) || String(a.time || '').localeCompare(String(b.time || '')))
+      .slice(0,5);
+  }
+  function renderDashboard(){
+    const root = document.getElementById('view-dashboard');
+    if(!root) return;
+    const m = realMetrics();
+    const months = procedureMonths(m.appts);
+    const maxMonth = Math.max(1, ...months.map(x => x.count));
+    const maxStage = Math.max(1, ...Object.values(m.stageCounts));
+    const up = upcoming(m.appts);
+    root.innerHTML = `
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-top"><div><div class="stat-label">Agendamentos hoje</div><div class="stat-value">${m.todayAppts}</div></div><div class="stat-icon gold">📅</div></div><div class="stat-sub">Agenda criada no CRM</div></div>
+        <div class="stat-card"><div class="stat-top"><div><div class="stat-label">Cirurgias no mês</div><div class="stat-value">${m.monthSurgeries}</div></div><div class="stat-icon green">✂</div></div><div class="stat-sub">Agendamentos com cirurgia/transplante</div></div>
+        <div class="stat-card"><div class="stat-top"><div><div class="stat-label">Leads em aberto</div><div class="stat-value">${m.openLeads}</div></div><div class="stat-icon blue">◈</div></div><div class="stat-sub">${m.leads.length} leads comerciais na base</div></div>
+        <div class="stat-card"><div class="stat-top"><div><div class="stat-label">Conversão comercial</div><div class="stat-value">${m.conversion}%</div></div><div class="stat-icon orange">▥</div></div><div class="stat-sub">${m.won} fechados · ${m.lost} perdidos</div></div>
+      </div>
+      <div class="dashboard-real-grid-v11">
+        <div class="card">
+          <div class="card-header"><h3>Procedimentos por mês</h3><span class="dash-updated-v11">Atualizado agora</span></div>
+          <div class="card-body">
+            <div class="real-bars-v11">${months.map(b => `<div class="real-bar-v11"><div class="real-bar-fill-v11" style="height:${Math.max(8, Math.round((b.count/maxMonth)*150))}px">${b.count}</div><div class="real-bar-label-v11">${esc(b.label)}</div></div>`).join('')}</div>
+          </div>
+          <div class="card-header" style="border-top:1px solid var(--border);border-bottom:none;margin-top:0"><h3>Próximos agendamentos</h3></div>
+          <div class="dash-table-v11">
+            <div class="ag-head" style="border-radius:0"><div class="ag-head-cell">Data</div><div class="ag-head-cell">Paciente</div><div class="ag-head-cell">Status</div><div class="ag-head-cell">Atendimento</div><div class="ag-head-cell">Contato</div><div class="ag-head-cell">Ação</div></div>
+            ${up.length ? up.map(a => `<div class="ag-row"><div class="ag-cell ag-time">${esc(isoToBR(a.date))}<span>${esc(a.time || '')}</span></div><div class="ag-cell"><div class="cell-patient"><div class="av-sm">${initials(a.patient)}</div><div><div class="ag-patient-name">${esc(a.patient)}</div></div></div></div><div class="ag-cell"><span class="badge b-agendado">${esc(a.status || 'Agendado')}</span></div><div class="ag-cell"><div><div class="ag-proc-type">Comercial</div><div class="ag-proc-name">${esc(a.proc || 'Avaliação')}</div></div></div><div class="ag-cell">${esc(a.tel || a.email || '—')}</div><div class="ag-cell"><button class="btn btn-outline btn-sm" onclick="openAppointmentV11('${esc(a.id)}')">Abrir</button></div></div>`).join('') : '<div class="empty-state"><p>Nenhum agendamento futuro criado no CRM.</p></div>'}
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>Funil Comercial</h3></div>
+          <div class="card-body">
+            <div class="funnel-real-v11">${STAGES.map((s, idx) => {
+              const colors = ['#2980b9','#bc9a37','#8e7b48','#d98f32','#27ae60','#c0392b'];
+              const count = m.stageCounts[s] || 0;
+              const width = Math.max(8, Math.round((count/maxStage)*100));
+              return `<div class="funnel-item-v11"><span>${esc(s)}</span><div class="funnel-track-v11"><div class="funnel-fill-v11" style="width:${width}%;background:${colors[idx]}">${count}</div></div><strong>${count}</strong></div>`;
+            }).join('')}</div>
+            <div class="dashboard-actions-v11">
+              <button class="btn btn-gold" onclick="nav(document.querySelector('.nav-item[onclick*=pipeline]'),'pipeline')">Ver pipeline</button>
+              <button class="btn btn-outline" onclick="nav(document.querySelector('.nav-item[onclick*=leads]'),'leads')">Ver lista de leads</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function updateBadges(){
+    const m = realMetrics();
+    document.body.classList.add('client-ready-fix-v11');
+    const pBadge = document.querySelector('.nav-item[onclick*="prontuarios"] .nav-badge');
+    if(pBadge) { pBadge.textContent = m.patients.length; pBadge.dataset.realCount = '1'; }
+    const pipeBadge = document.querySelector('.nav-item[onclick*="pipeline"] .nav-badge');
+    if(pipeBadge) { pipeBadge.textContent = m.openLeads > 999 ? '999+' : String(m.openLeads); pipeBadge.dataset.realCount = '1'; }
+  }
+
+  function renderPatients(){
+    const table = document.querySelector('#view-prontuarios .patients-table');
+    if(!table) return;
+    const patients = loadPatients();
+    table.innerHTML = '<div class="pt-head"><div class="pt-head-cell">Paciente</div><div class="pt-head-cell">Telefone</div><div class="pt-head-cell">E-mail</div><div class="pt-head-cell">CPF</div><div class="pt-head-cell">Último</div><div class="pt-head-cell">Ações</div></div>' +
+      patients.map(p => `<div class="pt-row" onclick="openPatientV11('${esc(p.id)}')"><div class="pt-cell"><div class="cell-patient"><div class="av-sm">${initials(p.name)}</div><div><div style="font-weight:500">${esc(p.name)}</div></div></div></div><div class="pt-cell">${esc(p.tel)}</div><div class="pt-cell" style="font-size:12px">${esc(p.email)}</div><div class="pt-cell" style="font-size:12px;color:var(--text-3)">—</div><div class="pt-cell" style="font-size:12px">${esc(p.ultimo)}</div><div class="pt-cell pt-actions"><button onclick="event.stopPropagation();openPatientV11('${esc(p.id)}')">Editar</button></div></div>`).join('');
+  }
+  window.openPatientV11 = function(id){
+    const p = loadPatients().find(x => x.id === id);
+    if(p && typeof openPatient === 'function') openPatient(p.name,p.sub,p.tel,p.email,p.grau,p.grafts,p.proc,p.medico,p.ultimo,p.agend,p.cancel,p.convenio);
+  };
+
+  function ensureScheduleModal(){
+    if(document.getElementById('schedule-modal-v11')) return;
+    document.body.insertAdjacentHTML('beforeend', `
+      <div class="schedule-modal-v11" id="schedule-modal-v11">
+        <div class="schedule-card-v11">
+          <header><h3>Agendar lead</h3><button class="dp-close" onclick="closeScheduleModalV11()">×</button></header>
+          <div class="schedule-body-v11">
+            <div class="schedule-field-v11"><label>Paciente / lead</label><input id="sch-name-v11" readonly></div>
+            <div class="schedule-grid-v11">
+              <div class="schedule-field-v11"><label>Data</label><input type="date" id="sch-date-v11"></div>
+              <div class="schedule-field-v11"><label>Horário</label><input type="time" id="sch-time-v11" value="09:00"></div>
+            </div>
+            <div class="schedule-grid-v11">
+              <div class="schedule-field-v11"><label>Status</label><select id="sch-status-v11">${AGENDA_STATUSES.map(s => `<option>${s}</option>`).join('')}</select></div>
+              <div class="schedule-field-v11"><label>Atendimento</label><input id="sch-proc-v11"></div>
+            </div>
+            <div class="schedule-field-v11"><label>Observações</label><textarea id="sch-obs-v11"></textarea></div>
+          </div>
+          <div class="schedule-actions-v11"><button class="btn btn-outline" onclick="closeScheduleModalV11()">Cancelar</button><button class="btn btn-gold" onclick="saveScheduleModalV11()">Salvar agendamento</button></div>
+        </div>
+      </div>`);
+  }
+  function activeLead(){
+    const id = scheduleLeadId || window.__activeLeadForScheduleV11;
+    return loadLeads().find(l => l.id === id);
+  }
+  window.closeScheduleModalV11 = function(){ document.getElementById('schedule-modal-v11')?.classList.remove('open'); };
+  window.scheduleLeadV10 = window.scheduleLeadV11 = function(){
+    const lead = activeLeadFromPanel();
+    if(!lead) return alert('Abra um lead primeiro.');
+    scheduleLeadId = lead.id;
+    ensureScheduleModal();
+    document.getElementById('sch-name-v11').value = lead.name || '';
+    document.getElementById('sch-date-v11').value = todayISO();
+    document.getElementById('sch-time-v11').value = '09:00';
+    document.getElementById('sch-proc-v11').value = lead.proc || 'Avaliação';
+    document.getElementById('sch-status-v11').value = 'Agendado';
+    document.getElementById('sch-obs-v11').value = lead.obs || '';
+    document.getElementById('schedule-modal-v11').classList.add('open');
+  };
+  function activeLeadFromPanel(){
+    const name = document.getElementById('lp-name')?.textContent || '';
+    const leads = loadLeads();
+    return leads.find(l => l.id === scheduleLeadId) || leads.find(l => l.name === name);
+  }
+  window.saveScheduleModalV11 = async function(){
+    const lead = activeLead();
+    if(!lead) return alert('Lead não encontrado.');
+    const date = document.getElementById('sch-date-v11').value;
+    const time = document.getElementById('sch-time-v11').value || '09:00';
+    const proc = document.getElementById('sch-proc-v11').value || 'Avaliação';
+    if(!date) return alert('Informe a data do agendamento.');
+    const appts = loadAppointments();
+    const appt = {
+      id:'ag-'+Date.now(),
+      leadId:lead.id,
+      patient:lead.name,
+      tel:lead.tel || '',
+      email:lead.email || '',
+      date,
+      time,
+      proc,
+      status:document.getElementById('sch-status-v11').value || 'Agendado',
+      obs:document.getElementById('sch-obs-v11').value || ''
+    };
+    appts.unshift(appt);
+    saveAppointments(appts);
+    const leads = loadLeads();
+    const l = leads.find(x => x.id === lead.id);
+    if(l) { l.etapa = 'Fechado'; l.ultimo = isoToBR(date); saveLeads(leads); await syncDoc('leads', l.id, l); }
+    await syncDoc('appointments', appt.id, appt);
+    closeScheduleModalV11();
+    if(typeof closeLeadDetail === 'function') closeLeadDetail();
+    renderDashboard();
+    updateBadges();
+    renderAgendaCommercial();
+    if(typeof renderLeadViewsV6 === 'function') renderLeadViewsV6();
+    const agendaNav = document.querySelector('.nav-item[onclick*="agenda"]');
+    if(agendaNav && typeof nav === 'function') nav(agendaNav,'agenda');
+  };
+  window.openAppointmentV11 = function(id){
+    const a = loadAppointments().find(x => x.id === id);
+    if(!a) return;
+    if(typeof openDetail === 'function') openDetail(a.patient, a.proc, a.tel || '', a.email || '', '', '', '—', '—', `${a.time || ''}`, 'Dra. Thais Machado', a.obs || '');
+  };
+  function renderAgendaCommercial(){
+    const agenda = document.getElementById('view-agenda');
+    const table = agenda?.querySelector('.agenda-table');
+    if(!agenda || !table) return;
+    let panel = agenda.querySelector('.agenda-commercial-v10');
+    if(!panel) {
+      table.insertAdjacentHTML('beforebegin','<div class="agenda-commercial-v10"><h3>Agendamentos criados no CRM</h3><div class="agenda-commercial-body-v10"></div></div>');
+      panel = agenda.querySelector('.agenda-commercial-v10');
+    }
+    const appts = loadAppointments().slice(0,10);
+    panel.querySelector('.agenda-commercial-body-v10').innerHTML = appts.length ? appts.map(a => `<div class="ag-row"><div class="ag-cell ag-time">${esc(isoToBR(a.date))}<span>${esc(a.time)}</span></div><div class="ag-cell"><div class="cell-patient"><div class="av-sm">${initials(a.patient)}</div><div><div class="ag-patient-name">${esc(a.patient)}</div></div></div></div><div class="ag-cell"><span class="badge b-agendado">${esc(a.status)}</span></div><div class="ag-cell"><div><div class="ag-proc-type">CRM</div><div class="ag-proc-name">${esc(a.proc)}</div></div></div><div class="ag-cell">${esc(a.tel || a.email || '—')}</div><div class="ag-cell"><button class="btn btn-outline btn-sm" onclick="openAppointmentV11('${esc(a.id)}')">Abrir</button></div></div>`).join('') : '<div class="empty-state"><p>Nenhum agendamento criado no CRM ainda.</p></div>';
+  }
+
+  function patchLeadOpenTracking(){
+    const names = ['openLeadV10','openLeadV9','openLeadV8','openLeadV7'];
+    names.forEach(name => {
+      const old = window[name];
+      if(typeof old === 'function' && !old.v11Tracked) {
+        const wrapped = function(id){ window.__activeLeadForScheduleV11 = id; scheduleLeadId = id; return old.apply(this, arguments); };
+        wrapped.v11Tracked = true;
+        window[name] = wrapped;
+      }
+    });
+  }
+  function boot(){
+    seedPatients();
+    renderPatients();
+    renderDashboard();
+    updateBadges();
+    renderAgendaCommercial();
+    ensureScheduleModal();
+    patchLeadOpenTracking();
+  }
+  window.renderDashboardV11 = renderDashboard;
+  document.addEventListener('DOMContentLoaded', boot);
+  if(document.readyState !== 'loading') boot();
+})();
+</script>
 
 </body>
 </html>
