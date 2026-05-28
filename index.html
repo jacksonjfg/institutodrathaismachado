@@ -579,6 +579,69 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   .lead-tools .search-box, .lead-tools .filter-select { width:100%; }
 }
 
+
+
+/* DRA_THAIS_CRITICAL_FIXES_V7 */
+.tm-wordmark {
+  width:100%;
+  min-height:82px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  color:#9f7d2f;
+  text-align:center;
+}
+.tm-wordmark .tm-monogram {
+  font-family:'Playfair Display',serif;
+  font-size:42px;
+  line-height:.78;
+  font-weight:600;
+  letter-spacing:-.03em;
+  color:#b8973a;
+}
+.tm-wordmark .tm-instituto {
+  margin-top:5px;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#b8973a;
+  position:relative;
+}
+.tm-wordmark .tm-name {
+  font-family:'Playfair Display',serif;
+  font-size:16px;
+  line-height:1;
+  font-weight:600;
+  color:#9c7b32;
+}
+.firebase-card .tm-wordmark {
+  min-height:86px;
+  margin-bottom:8px;
+}
+.firebase-card .tm-wordmark .tm-monogram { font-size:46px; }
+.firebase-card .tm-wordmark .tm-name { font-size:17px; }
+.lead-whatsapp-btn {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  margin-top:8px;
+  border:1px solid rgba(39,174,96,.28);
+  background:rgba(39,174,96,.1);
+  color:var(--green);
+  border-radius:var(--radius);
+  padding:7px 10px;
+  font-size:12px;
+  font-weight:600;
+  text-decoration:none;
+}
+.lead-whatsapp-btn:hover { background:rgba(39,174,96,.16); }
+.lead-panel-save-row { display:flex; gap:8px; margin-top:10px; }
+.lead-panel-save-row .btn { flex:1; justify-content:center; }
+.v7-search-active { border-color:var(--gold) !important; background:#fff !important; }
+
 </style>
 </head>
 <body>
@@ -2540,5 +2603,374 @@ onAuthStateChanged(crm.auth, async user => {
   }, error => console.warn("Não foi possível ouvir leads do Firestore:", error));
 });
 </script>
+
+<script>
+// DRA_THAIS_CRITICAL_FIXES_V7
+// DRA_THAIS_CRITICAL_FIXES_V7_MICRO
+(function(){
+  const LEADS_KEY = 'dra_thais_crm_leads_v7';
+  const OLD_KEYS = ['dra_thais_crm_leads_v6'];
+  const STAGES = ['Novo contato','Pré-avaliação','Orçamento enviado','Negociação','Fechado','Perdido'];
+
+  const seed = [
+    {id:'l1',name:'Thiago Ramos',proc:'Transplante Capilar FUE',tel:'(85) 93333-7001',email:'thiago@email.com',idade:'37 anos',sexo:'Masculino',canal:'Instagram',temp:'Quente',etapa:'Novo contato',valor:'R$ 14-18k',ultimo:'Hoje',obs:'Novo lead via Instagram'},
+    {id:'l2',name:'Patrícia Nunes',proc:'Intradermoterapia',tel:'(85) 92222-0008',email:'patricia@email.com',idade:'41 anos',sexo:'Feminino',canal:'WhatsApp',temp:'Morno',etapa:'Novo contato',valor:'R$ 3-5k',ultimo:'Ontem',obs:'Lead via WhatsApp'},
+    {id:'l3',name:'Lucas Carvalho',proc:'Transplante Capilar FUE',tel:'(85) 91111-0009',email:'lucas@email.com',idade:'39 anos',sexo:'Masculino',canal:'Site',temp:'Frio',etapa:'Novo contato',valor:'R$ 12-16k',ultimo:'3 dias',obs:'Pediu informações iniciais'},
+    {id:'l4',name:'Renata Alves',proc:'Transplante FUE',tel:'(85) 90000-0010',email:'renata@email.com',idade:'34 anos',sexo:'Feminino',canal:'Indicação',temp:'Quente',etapa:'Pré-avaliação',valor:'R$ 14-18k',ultimo:'Amanhã 10h',obs:'Avaliação marcada'},
+    {id:'l5',name:'Eduardo Martins',proc:'FUE + Intradermoterapia',tel:'(85) 90000-0012',email:'eduardo@email.com',idade:'44 anos',sexo:'Masculino',canal:'Instagram',temp:'Morno',etapa:'Pré-avaliação',valor:'R$ 18-22k',ultimo:'30/04 14h',obs:'Avaliação marcada'},
+    {id:'l6',name:'Diego Farias',proc:'Transplante FUE · 3.000 grafts',tel:'(85) 89999-0011',email:'diego@email.com',idade:'38 anos',sexo:'Masculino',canal:'Site',temp:'Quente',etapa:'Orçamento enviado',valor:'R$ 18.000',ultimo:'10/04',obs:'Aguardando retorno'},
+    {id:'l7',name:'Isabela Torres',proc:'Protocolo completo',tel:'(85) 89999-0044',email:'isabela@email.com',idade:'33 anos',sexo:'Feminino',canal:'Instagram',temp:'Morno',etapa:'Orçamento enviado',valor:'R$ 8.500',ultimo:'08/04',obs:'Proposta enviada'},
+    {id:'l8',name:'Bruno Castelo',proc:'Transplante FUE',tel:'(85) 88888-0022',email:'bruno@email.com',idade:'42 anos',sexo:'Masculino',canal:'WhatsApp',temp:'Morno',etapa:'Negociação',valor:'R$ 16.000',ultimo:'26/04',obs:'Negociando condições'},
+    {id:'l9',name:'Vanderley de Moraes Felix',proc:'FUE · 2.200 grafts',tel:'(85) 99996-4780',email:'Vanderleyfelix10@gmail.com',idade:'30 anos',sexo:'Masculino',canal:'Instagram',temp:'Quente',etapa:'Fechado',valor:'R$ 14.800',ultimo:'28/04',obs:'Cirurgia agendada'},
+    {id:'l10',name:'Carlos Henrique',proc:'Transplante FUE',tel:'(85) 87777-0033',email:'carlos@email.com',idade:'45 anos',sexo:'Masculino',canal:'Google',temp:'Frio',etapa:'Perdido',valor:'',ultimo:'15/04',obs:'Sem orçamento no momento'},
+    {id:'l11',name:'Sofia Mendes',proc:'Ledterapia',tel:'(85) 86666-0034',email:'sofia@email.com',idade:'28 anos',sexo:'Feminino',canal:'Instagram',temp:'Frio',etapa:'Perdido',valor:'',ultimo:'12/04',obs:'Cotação'}
+  ];
+
+  let leads = loadLeads();
+  let filters = { q:'', etapa:'Todos os status', temp:'Temperatura', canal:'Canal' };
+  let activeLeadId = null;
+
+  function esc(v){ return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function norm(v){ return String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
+  function initials(name){ return String(name||'').split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
+  function digits(v){ return String(v||'').replace(/\D/g,''); }
+  function tempClass(temp){ return temp === 'Quente' ? 'b-quente' : temp === 'Morno' ? 'b-morno' : 'b-frio'; }
+  function stageClass(stage){
+    if(stage === 'Pré-avaliação') return 'b-pre';
+    if(stage === 'Orçamento enviado') return 'b-orc';
+    if(stage === 'Negociação') return 'b-neg';
+    if(stage === 'Fechado') return 'b-fechado';
+    if(stage === 'Perdido') return 'b-perdido';
+    return 'b-novo';
+  }
+  function normalizeStage(stage){
+    const s = norm(stage).replace(/\s+/g,' ').trim();
+    if(s.startsWith('pre')) return 'Pré-avaliação';
+    if(s.startsWith('orc')) return 'Orçamento enviado';
+    if(s.startsWith('neg')) return 'Negociação';
+    if(s.startsWith('fechado')) return 'Fechado';
+    if(s.startsWith('perdido')) return 'Perdido';
+    return 'Novo contato';
+  }
+  function validLead(l){ return l && String(l.name||'').trim() && String(l.tel||l.email||l.proc||'').trim(); }
+  function hydrateLead(l, idx=0){
+    const fallback = seed.find(s => s.id === l.id || norm(s.name) === norm(l.name)) || {};
+    return {
+      id: String(l.id || fallback.id || ('l' + Date.now() + idx)),
+      name: l.name || fallback.name || '',
+      proc: l.proc || l.interesse || fallback.proc || 'A definir',
+      tel: l.tel || fallback.tel || '',
+      email: l.email || fallback.email || '',
+      idade: l.idade || fallback.idade || '',
+      sexo: l.sexo || fallback.sexo || '',
+      canal: l.canal || l.origem || fallback.canal || 'Instagram',
+      temp: ['Quente','Morno','Frio'].includes(l.temp) ? l.temp : (fallback.temp || 'Morno'),
+      etapa: normalizeStage(l.etapa || fallback.etapa),
+      valor: l.valor || fallback.valor || '',
+      ultimo: l.ultimo || fallback.ultimo || 'Agora',
+      obs: l.obs || fallback.obs || ''
+    };
+  }
+  function loadLeads(){
+    const sources = [LEADS_KEY, ...OLD_KEYS];
+    for (const key of sources) {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(key) || '[]');
+        if (Array.isArray(parsed) && parsed.filter(validLead).length >= 3) return parsed.filter(validLead).map(hydrateLead);
+      } catch(_){}
+    }
+    return seed.map(hydrateLead);
+  }
+  function saveLeads(){ localStorage.setItem(LEADS_KEY, JSON.stringify(leads)); }
+  async function syncLead(lead){
+    try {
+      if(window.firebaseCRM?.auth?.currentUser && window.firebaseCRM.saveClinicDoc) {
+        await window.firebaseCRM.saveClinicDoc('leads', lead.id, {...lead, updatedFrom:'crm-v7'});
+      }
+    } catch(error) {
+      console.warn('Lead salvo localmente, mas não sincronizou no Firestore', error);
+    }
+  }
+  function visibleLeads(){
+    return leads.filter(l => {
+      const hay = norm([l.name,l.tel,l.email,l.proc,l.canal,l.temp,l.etapa,l.valor,l.obs].join(' '));
+      const q = norm(filters.q);
+      return (!q || hay.includes(q)) &&
+        (filters.etapa === 'Todos os status' || l.etapa === filters.etapa) &&
+        (filters.temp === 'Temperatura' || l.temp === filters.temp) &&
+        (filters.canal === 'Canal' || l.canal === filters.canal);
+    });
+  }
+
+  function wordmark(){
+    return '<div class="tm-wordmark"><div class="tm-monogram">TM</div><div class="tm-instituto">Instituto</div><div class="tm-name">Dra. Thais Machado</div></div>';
+  }
+  function fixLogo(){
+    const logo = document.querySelector('.sidebar-logo');
+    if(logo) logo.innerHTML = wordmark();
+    const card = document.querySelector('.firebase-card');
+    if(card && !card.querySelector('.tm-wordmark')) card.insertAdjacentHTML('afterbegin', wordmark());
+    const p = card?.querySelector('p');
+    if(p) p.textContent = 'Acesse com seu e-mail e senha para entrar no sistema.';
+  }
+
+  function renderPipeline(){
+    const wrap = document.querySelector('#view-pipeline .kanban-wrap');
+    if(!wrap) return;
+    const list = visibleLeads();
+    wrap.innerHTML = STAGES.map(stage => {
+      const items = list.filter(l => l.etapa === stage);
+      return '<div class="kanban-col"><div class="kcol-head"><span class="cname">'+esc(stage)+'</span><span class="ccount">'+items.length+'</span></div><div class="kcol-body" data-stage="'+esc(stage)+'">'+
+        (items.map(renderCard).join('') || '<div class="empty-state"><p>Nenhum lead</p></div>') +
+      '</div></div>';
+    }).join('');
+    wireDrag();
+  }
+  function renderCard(l){
+    return '<div class="kcard" draggable="true" data-lead-id="'+esc(l.id)+'" onclick="openLeadV7(\''+esc(l.id)+'\')">'+
+      '<div class="kc-name">'+esc(l.name)+'</div><div class="kc-proc">'+esc(l.proc)+'</div>'+
+      '<div class="kc-foot"><span class="badge '+tempClass(l.temp)+'">'+esc(l.temp)+'</span><span class="kc-date">'+esc(l.ultimo)+'</span></div>'+
+      '<div class="kc-canal">'+esc(l.canal)+' · '+esc(l.valor || 'Sem valor')+'</div></div>';
+  }
+  function wireDrag(){
+    document.querySelectorAll('#view-pipeline .kcard').forEach(card => {
+      card.addEventListener('dragstart', e => {
+        card.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', card.dataset.leadId);
+      });
+      card.addEventListener('dragend', () => card.classList.remove('dragging'));
+    });
+    document.querySelectorAll('#view-pipeline .kcol-body').forEach(zone => {
+      zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+      zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+      zone.addEventListener('drop', async e => {
+        e.preventDefault();
+        zone.classList.remove('drag-over');
+        const lead = leads.find(l => l.id === e.dataTransfer.getData('text/plain'));
+        if(!lead) return;
+        lead.etapa = zone.dataset.stage;
+        lead.ultimo = 'Agora';
+        saveLeads();
+        await syncLead(lead);
+        renderAllLeads();
+      });
+    });
+  }
+  function renderLeadList(){
+    const view = document.getElementById('view-leads');
+    const table = view?.querySelector('.leads-table');
+    const bar = view?.querySelector('.filter-bar');
+    if(!view || !table || !bar) return;
+    bar.innerHTML = '<div class="lead-tools">'+
+      '<div class="search-box"><span style="color:var(--text-4);font-size:14px">🔍</span><input id="lead-q-v7" type="text" placeholder="Buscar lead..." value="'+esc(filters.q)+'"></div>'+
+      '<select class="filter-select" id="lead-stage-v7"><option>Todos os status</option>'+STAGES.map(s=>'<option '+(filters.etapa===s?'selected':'')+'>'+esc(s)+'</option>').join('')+'</select>'+
+      '<select class="filter-select" id="lead-temp-v7"><option>Temperatura</option>'+['Quente','Morno','Frio'].map(s=>'<option '+(filters.temp===s?'selected':'')+'>'+s+'</option>').join('')+'</select>'+
+      '<select class="filter-select" id="lead-canal-v7"><option>Canal</option>'+['Instagram','WhatsApp','Site','Indicação','Google'].map(s=>'<option '+(filters.canal===s?'selected':'')+'>'+s+'</option>').join('')+'</select>'+
+      '<button class="btn btn-gold btn-sm" onclick="openLeadModal()">＋ Novo lead</button></div>';
+    document.getElementById('lead-q-v7').oninput = e => { filters.q = e.target.value; renderAllLeads(); };
+    document.getElementById('lead-stage-v7').onchange = e => { filters.etapa = e.target.value; renderAllLeads(); };
+    document.getElementById('lead-temp-v7').onchange = e => { filters.temp = e.target.value; renderAllLeads(); };
+    document.getElementById('lead-canal-v7').onchange = e => { filters.canal = e.target.value; renderAllLeads(); };
+    const rows = visibleLeads();
+    table.innerHTML = '<div class="lt-head"><div class="lt-head-cell">Lead</div><div class="lt-head-cell">Interesse</div><div class="lt-head-cell">Canal</div><div class="lt-head-cell">Temp.</div><div class="lt-head-cell">Etapa</div><div class="lt-head-cell">Valor est.</div><div class="lt-head-cell">Último contato</div><div class="lt-head-cell">Ações</div></div>'+
+      (rows.map(l => '<div class="lt-row" onclick="openLeadV7(\''+esc(l.id)+'\')">'+
+        '<div class="lt-cell"><div class="cell-patient"><div class="av-sm">'+initials(l.name)+'</div><div><div style="font-weight:500">'+esc(l.name)+'</div><div style="font-size:11px;color:var(--text-3)">'+esc(l.tel)+'</div></div></div></div>'+
+        '<div class="lt-cell" style="font-size:12px">'+esc(l.proc)+'</div><div class="lt-cell" style="font-size:12px">'+esc(l.canal)+'</div>'+
+        '<div class="lt-cell"><span class="badge '+tempClass(l.temp)+'">'+esc(l.temp)+'</span></div><div class="lt-cell"><span class="badge '+stageClass(l.etapa)+'">'+esc(l.etapa)+'</span></div>'+
+        '<div class="lt-cell" style="color:var(--gold);font-weight:500">'+esc(l.valor || '—')+'</div><div class="lt-cell" style="font-size:12px">'+esc(l.ultimo)+'</div>'+
+        '<div class="lt-cell"><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openLeadV7(\''+esc(l.id)+'\')">Ver</button></div></div>').join('') || '<div class="empty-state"><p>Nenhum lead encontrado.</p></div>');
+  }
+  function renderAllLeads(){ renderPipeline(); renderLeadList(); }
+
+  function whatsappUrl(tel){
+    const n = digits(tel);
+    if(!n) return '#';
+    const withCountry = n.startsWith('55') ? n : '55' + n;
+    return 'https://wa.me/' + withCountry;
+  }
+  function openLead(id){
+    const lead = leads.find(l => l.id === id);
+    if(!lead) return;
+    activeLeadId = id;
+    if(typeof window.openLeadDetail === 'function') window.openLeadDetail(lead.name, lead.proc, lead.tel, lead.email, lead.idade, lead.sexo, lead.canal, lead.temp, lead.etapa, lead.valor || '—', lead.ultimo);
+    const obs = document.getElementById('lp-obs');
+    if(obs) obs.value = lead.obs || '';
+    document.querySelectorAll('#lead-panel .lead-whatsapp-btn').forEach(a => a.remove());
+    document.getElementById('lp-tel')?.insertAdjacentHTML('afterend', '<a class="lead-whatsapp-btn" target="_blank" href="'+whatsappUrl(lead.tel)+'">Abrir WhatsApp</a>');
+    const oldRows = document.querySelectorAll('#lead-panel .lead-panel-save-row');
+    oldRows.forEach(r => r.remove());
+    const body = document.querySelector('#lead-panel .dp-body');
+    if(body) body.insertAdjacentHTML('beforeend', '<div class="lead-panel-save-row"><button class="btn btn-outline" onclick="closeLeadDetail()">Cancelar</button><button class="btn btn-gold" onclick="saveLeadV7()">Salvar alterações</button></div><div class="lead-save-hint">Salva no navegador e no Firestore quando logado.</div>');
+    document.querySelectorAll('#lead-panel .btn-gold').forEach(btn => {
+      if ((btn.textContent || '').toLowerCase().includes('salvar')) btn.onclick = saveLead;
+    });
+  }
+  async function saveLead(){
+    const lead = leads.find(l => l.id === activeLeadId);
+    if(!lead) return alert('Abra um lead antes de salvar.');
+    lead.valor = document.getElementById('lp-valor')?.value || '';
+    lead.obs = document.getElementById('lp-obs')?.value || '';
+    const active = document.querySelector('#lp-funnel .funnel-opt.active')?.textContent.trim();
+    if(active) lead.etapa = normalizeStage(active.replace(' (cirurgia agendada)',''));
+    lead.ultimo = 'Agora';
+    saveLeads();
+    await syncLead(lead);
+    renderAllLeads();
+    openLead(lead.id);
+  }
+  window.openLeadV7 = openLead;
+  window.saveLeadV7 = saveLead;
+
+  const oldSelectFunnel = window.selectFunnel;
+  window.selectFunnel = function(el){
+    if(typeof oldSelectFunnel === 'function') oldSelectFunnel(el);
+    const lead = leads.find(l => l.id === activeLeadId);
+    if(lead){
+      lead.etapa = normalizeStage(el.textContent.trim().replace(' (cirurgia agendada)',''));
+      lead.ultimo = 'Agora';
+      saveLeads();
+      syncLead(lead);
+      renderAllLeads();
+    }
+  };
+
+  function readLeadModal(){
+    const root = document.getElementById('m-lead');
+    const inputs = Array.from(root.querySelectorAll('input,select,textarea'));
+    return {
+      id:'l' + Date.now(),
+      name: inputs[0]?.value?.trim() || '',
+      tel: inputs[1]?.value?.trim() || '',
+      cpf: inputs[2]?.value?.trim() || '',
+      idade: inputs[3]?.value?.trim() || '',
+      email: inputs[4]?.value?.trim() || '',
+      sexo: inputs[5]?.value || '',
+      canal: inputs[6]?.value || 'Instagram',
+      temp: inputs[7]?.value || 'Morno',
+      etapa: normalizeStage(inputs[8]?.value || 'Novo contato'),
+      proc: inputs[9]?.value || 'A definir',
+      valor: inputs[10]?.value?.trim() || '',
+      obs: inputs[11]?.value?.trim() || '',
+      ultimo:'Agora'
+    };
+  }
+  async function saveModalLead(){
+    const isLead = document.getElementById('m-lead')?.style.display !== 'none';
+    if(!isLead) return false;
+    const lead = hydrateLead(readLeadModal());
+    if(!lead.name || !lead.tel) {
+      alert('Preencha pelo menos nome e WhatsApp do lead.');
+      return true;
+    }
+    leads.unshift(lead);
+    saveLeads();
+    await syncLead(lead);
+    if(typeof closeModal === 'function') closeModal();
+    renderAllLeads();
+    openLead(lead.id);
+    return true;
+  }
+  function patchModal(){
+    const btn = document.querySelector('.modal-foot .btn-gold');
+    if(btn) {
+      btn.onclick = async function(e){
+        e.preventDefault();
+        const handled = await saveModalLead();
+        if(!handled && typeof closeModal === 'function') closeModal();
+      };
+    }
+  }
+
+  function patchSearch(){
+    const top = document.querySelector('.topbar .search-box input');
+    if(top) {
+      top.oninput = e => {
+        filters.q = e.target.value;
+        const active = document.querySelector('.view.active')?.id;
+        if(active === 'view-pipeline' || active === 'view-leads') renderAllLeads();
+        const patientSearch = document.querySelector('#view-prontuarios .search-box input');
+        if(active === 'view-prontuarios' && patientSearch) {
+          patientSearch.value = e.target.value;
+          filterPatients(e.target.value);
+        }
+      };
+    }
+    const pInput = document.querySelector('#view-prontuarios .search-box input');
+    if(pInput) pInput.oninput = e => filterPatients(e.target.value);
+  }
+  function filterPatients(q){
+    const query = norm(q);
+    document.querySelectorAll('#view-prontuarios .pt-row').forEach(row => {
+      row.style.display = !query || norm(row.textContent).includes(query) ? '' : 'none';
+    });
+  }
+
+  function patchTabs(){
+    window.switchPTab = function(el,id){
+      document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+      if(el) el.classList.add('active');
+      document.querySelectorAll('.patient-tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById(id)?.classList.add('active');
+    };
+  }
+
+  function cleanAtestado(text){
+    return String(text || '')
+      .replace(/\\n/g,'\n')
+      .replace(/\{cid1\}/g,'')
+      .replace(/\{cid2\}/g,'')
+      .replace(/CID-10:\s*\./g,'CID-10:')
+      .replace(/CID-10:\s*$/g,'CID-10:')
+      .trim();
+  }
+  function patchAtestado(){
+    const oldOpen = window.openCareSheetV5;
+    if(typeof oldOpen === 'function' && !oldOpen.v7){
+      const wrapped = function(type){
+        oldOpen(type);
+        setTimeout(() => {
+          const f = document.getElementById('att-text-v5');
+          if(f) f.value = cleanAtestado(f.value);
+        }, 0);
+      };
+      wrapped.v7 = true;
+      window.openCareSheetV5 = wrapped;
+    }
+    const oldApply = window.applyAtestadoTemplateV5;
+    window.applyAtestadoTemplateV5 = function(){
+      if(typeof oldApply === 'function') oldApply();
+      const f = document.getElementById('att-text-v5');
+      if(f) f.value = cleanAtestado(f.value);
+    };
+  }
+
+  window.applyFirestoreLeadsV6 = function(remote){
+    if(!Array.isArray(remote)) return;
+    const cleaned = remote.filter(validLead).map(hydrateLead);
+    if(cleaned.length < 3) {
+      console.warn('Firestore retornou poucos leads válidos; mantendo lista local para evitar sumiço.');
+      return;
+    }
+    const byId = new Map(leads.map(l => [l.id, l]));
+    cleaned.forEach(r => byId.set(r.id, {...(byId.get(r.id)||{}), ...r}));
+    leads = Array.from(byId.values()).filter(validLead).map(hydrateLead);
+    saveLeads();
+    renderAllLeads();
+  };
+
+  function init(){
+    fixLogo();
+    patchModal();
+    patchSearch();
+    patchTabs();
+    patchAtestado();
+    renderAllLeads();
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+  if(document.readyState !== 'loading') init();
+})();
+</script>
+
 </body>
 </html>
